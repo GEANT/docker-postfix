@@ -22,6 +22,17 @@ sed -i '/^#dnsblog *unix.*dnsblog$/s/^#//g' /etc/postfix/master.cf
 
 # Do we enable & configure spf-engine?
 if [ "${ENABLE_SPF}" = "true" ]; then
-    echo "policy  unix  -       n       n       -       0       spawn" >> "${POSTFIX_MASTERCF_FILE}"
-    echo "    user=nobody argv=/usr/local/lib/policyd-spf-perl" >> "${POSTFIX_MASTERCF_FILE}"
+    echo "policy  unix  -       n       n       -       0       spawn" >>"${POSTFIX_MASTERCF_FILE}"
+    echo "    user=nobody argv=/usr/local/lib/policyd-spf-perl" >>"${POSTFIX_MASTERCF_FILE}"
+fi
+
+# Please note that on Debian submission port (587) and smtps port (465) are called
+# "submission" and "submissions" either in /etc/postfix/master.cf and in /etc/services
+# Do we enable & configure submission port?
+if [ "${ENABLE_SUBMISSION_PORT}" = "true" ]; then
+    sed -i '/^#submission *inet.*smtpd$/s/^#//g' /etc/postfix/master.cf
+fi
+# Do we enable & configure smtps port?
+if [ "${ENABLE_SMTPS_PORT}" = "true" ]; then
+    sed -i '/^#submissions *inet.*smtpd$/s/^#//g' /etc/postfix/master.cf
 fi

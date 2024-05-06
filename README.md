@@ -1,6 +1,6 @@
 # mikenye/postfix
 
-![Docker](https://github.com/mikenye/docker-postfix/workflows/Docker/badge.svg) ![Linting](https://github.com/mikenye/docker-postfix/workflows/Linting/badge.svg)
+![Linting](https://github.com/mikenye/docker-postfix/workflows/Linting/badge.svg)
 
 Postfix is Wietse Venema's excellent mail server.
 
@@ -110,7 +110,7 @@ volumes:
 services:
 
   mail_out:
-    image: mikenye/postfix
+    image: ghcr.io/mikenye/postfix:latest
     container_name: mail_out
     restart: always
     logging:
@@ -154,7 +154,7 @@ services:
       - "logs_out:/var/log:rw"
 
   mail_in:
-    image: mikenye/postfix
+    image: ghcr.io/mikenye/postfix:latest
     container_name: mail_in
     restart: always
     logging:
@@ -183,6 +183,7 @@ services:
       POSTFIX_RELAYHOST: "exchange.server.IP.addr"
       POSTFIX_RELAY_DOMAINS: "yourdomain.tld,someotherdomain.tld"
       POSTFIX_DNSBL_SITES: "hostkarma.junkemailfilter.com=127.0.0.2, bl.spamcop.net, cbl.abuseat.org=127.0.0.2, zen.spamhaus.org"
+      ENABLE_SUBMISSION_PORT: "true"
       ENABLE_OPENDKIM: "true"
       OPENDKIM_MODE: "v"
       OPENDKIM_LOGRESULTS: "true"
@@ -273,6 +274,8 @@ volumes:
 | `POSTFIX_RELAY_DOMAINS`            | See [documentation link](http://www.postfix.org/postconf.5.html#relay_domains). |
 | `POSTFIX_RELAYHOST_PORT`           | Optional port argument for `POSTFIX_RELAYHOST`. Default is `25` so only need to change if you're `relayhost` is running on a different port. |
 | `POSTFIX_RELAYHOST`                | See [documentation link](http://www.postfix.org/postconf.5.html#relayhost). |
+| `ENABLE_SUBMISSION_PORT`           | Enable port 587. See [documentation link](https://www.postfix.org/postconf.5.html#service_name). |
+| `ENABLE_SMTPS_PORT`                | Enable legacy port 465. See [documentation link](https://www.postfix.org/postconf.5.html#service_name). |
 | `POSTFIX_SMTP_TLS_CHAIN_FILES`     | See [documentation link](http://www.postfix.org/postconf.5.html#smtp_tls_chain_files). |
 | `POSTFIX_SMTPD_MILTERS`            | Any milters given here are applied after DKIM & ClamAV. See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_milters). |
 | `POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_SASL_AUTHENTICATED` | Set to `true` to include in `smtpd_recipient_restrictions`. See [documentation link](http://www.postfix.org/postconf.5.html#permit_sasl_authenticated). |
@@ -327,6 +330,7 @@ If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, the final `smtpd_recipient_restric
 | Environment Variable               | Detail                                                                  |
 |------------------------------------|-------------------------------------------------------------------------|
 | `FRESHCLAM_CHECKS_PER_DAY`         | Optional. Number of database checks per day. Default: `12` (every two hours). |
+| `FRESHCLAM_DB_MIRROR`              | Optional. The hostname to fetch ClamAV updates from. Default: `database.clamav.net`. |
 | `CLAMAV_MILTER_REPORT_HOSTNAME`    | Optional. The hostname ClamAV Milter will report in the `X-Virus-Scanned` header. If unset, defaults to the container's hostname. |
 | `CLAMAV_MILTER_ALLOWLIST` | Optional. Sets ClamAV Milter's [`Whitelist`](https://linux.die.net/man/5/clamav-milter.conf) option. |
 | `CLAMAV_CLAMD_PHISHING_SIGNATURES`       | Optional. Overrides ClamAV Daemon's default setting for [`PhishingSignatures`](https://linux.die.net/man/5/clamd.conf). |
@@ -334,7 +338,6 @@ If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, the final `smtpd_recipient_restric
 | `CLAMAV_CLAMD_PHISHING_ALWAYS_BLOCK_SSL_MISMATCH` | Optional. Overrides ClamAV Daemon's default setting for [`PhishingAlwaysBlockSSLMismatch`](https://linux.die.net/man/5/clamd.conf). |
 | `CLAMAV_CLAMD_PHISHING_ALWAYS_BLOCK_CLOAK` | Optional. Overrides ClamAV Daemon's default setting for [`PhishingAlwaysBlockCloak`](https://linux.die.net/man/5/clamd.conf). |
 | `CLAMAV_CLAMD_HEURISTIC_SCAN_PRECEDENCE` | Optional. Overrides ClamAV Daemon's default setting for [`HeuristicScanPrecedence`](https://linux.die.net/man/5/clamd.conf). |
-
 
 ## Configuration Files
 
@@ -415,7 +418,7 @@ docker run \
     -it \
     -v $(pwd):/workdir \
     --entrypoint opendkim-genkey \
-    mikenye/postfix \
+    ghcr.io/mikenye/postfix:latest \
     --directory=/workdir \
     --bits=1024 \
     --selector=<selector> \
