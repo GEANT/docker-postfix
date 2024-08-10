@@ -7,9 +7,9 @@ build:
     GIT_STRATEGY: clone
   script:
     - docker build --no-cache --build-arg CACHEBUST=$(date +%s) -t $CI_PROJECT_NAME:$CI_COMMIT_TAG .
-    - echo $AFACTORY_USER | docker login -u $AFACTORY_USER --password-stdin $AFACTORY_URL
-    - docker tag $CI_PROJECT_NAME:$CI_COMMIT_TAG $CI_REGISTRY/geant-devops-docker/$CI_PROJECT_NAME:$CI_COMMIT_TAG
-    - docker image push $AFACTORY_URL/geant-devops-docker/$CI_PROJECT_NAME:$CI_COMMIT_TAG
+    #- echo $AFACTORY_USER | docker login -u $AFACTORY_USER --password-stdin $AFACTORY_URL
+    #- docker tag $CI_PROJECT_NAME:$CI_COMMIT_TAG $CI_REGISTRY/geant-devops-docker/$CI_PROJECT_NAME:$CI_COMMIT_TAG
+    #- docker image push $AFACTORY_URL/geant-devops-docker/$CI_PROJECT_NAME:$CI_COMMIT_TAG
   only:
     - tags
   tags:

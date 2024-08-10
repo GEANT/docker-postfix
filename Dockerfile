@@ -4,8 +4,6 @@ ENV CLAMAV_CLAMDCONF_FILE="/usr/local/etc/clamd.conf" \
     CLAMAV_FRESHCLAMCONF_FILE="/usr/local/etc/freshclam.conf" \
     CLAMAV_LATEST_STABLE_URL="https://www.clamav.net/downloads/production/clamav-1.3.1.linux.x86_64.deb" \
     CLAMAV_LATEST_STABLE_SIG="https://www.clamav.net/downloads/production/clamav-1.3.1.linux.x86_64.deb.sig" \
-    #CLAMAV_LATEST_STABLE_SOURCE_URL="https://www.clamav.net/downloads/production/clamav-1.3.1.tar.gz" \
-    #CLAMAV_LATEST_STABLE_SOURCE_SIG_URL="https://www.clamav.net/downloads/production/clamav-1.3.1.tar.gz.sig" \
     CLAMAV_MILTERCONF_FILE="/usr/local/etc/clamav-milter.conf" \
     ENABLE_OPENDKIM="false" \
     POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION="defer" \
@@ -133,34 +131,14 @@ RUN set -x && \
     ln -s /opt/postgrey/postgrey /usr/local/bin/postgrey && \
     mkdir -p /var/spool/postfix/postgrey && \
     popd && \
-    # Install rust
-    curl --location --output /src/rustup.sh https://sh.rustup.rs && \
-    chmod a+x /src/rustup.sh && \
-    /src/rustup.sh -y && \
-    source "$HOME/.cargo/env" && \
     # Install clamav
     #mkdir -p /src/clamav && \
     curl --location --output /tmp/clamav.deb "${CLAMAV_LATEST_STABLE_URL}" && \
-    apt-get install -y /tmp/clamav.deb && \
-    # curl --location --output /tmp/clamav.deb.sig "${CLAMAV_LATEST_STABLE_SOURCE_SIG_URL}" && \
+    curl --location --output /tmp/clamav.deb.sig "${CLAMAV_LATEST_STABLE_SOURCE_SIG_URL}" && \
     # /talos.gpg is from clamav downloads > talos pgp public key
-    # gpg2 --import /talos.gpg && \
-    # gpg2 --verify /src/clamav.tar.gz.sig /src/clamav.tar.gz || exit 1 && \
-    # tar xf /src/clamav.tar.gz -C /src/clamav && \
-    # pushd "$(find /src/clamav -maxdepth 1 -type d | tail -1)" && \
-    # mkdir -p ./build && \
-    # pushd ./build && \
-    # cmake .. && \
-    # cmake --build . && \
-    # ctest && \
-    # cmake --build . --target install && \
-    # ldconfig && \
-    # mkdir -p /var/lib/clamav && \
-    # mkdir -p /run/freshclam && \
-    # mkdir -p /run/clamav-milter && \
-    # mkdir -p /run/clamd && \
-    # popd && \
-    # popd && \
+    gpg2 --import /talos.gpg && \
+    gpg2 --verify /src/clamav.tar.gz.sig /src/clamav.tar.gz || exit 1 && \
+    apt-get install -y /tmp/clamav.deb && \
     # Get postfix-policyd-spf-perl
     mkdir -p /src/postfix-policyd-spf-perl && \
     git clone git://git.launchpad.net/postfix-policyd-spf-perl /src/postfix-policyd-spf-perl && \
@@ -227,7 +205,6 @@ RUN set -x && \
     chmod a+x /src/deploy-s6-overlay.sh && \
     /src/deploy-s6-overlay.sh && \
     # Clean up
-    rustup self uninstall -y && \
     apt-get remove -y ${TEMP_PACKAGES[@]} && \
     apt-get autoremove -y && \
     apt-get clean -y && \
