@@ -2,8 +2,6 @@ FROM debian:bookworm-20240722-slim
 
 ENV CLAMAV_CLAMDCONF_FILE="/usr/local/etc/clamd.conf" \
     CLAMAV_FRESHCLAMCONF_FILE="/usr/local/etc/freshclam.conf" \
-    CLAMAV_LATEST_STABLE_URL="https://www.clamav.net/downloads/production/clamav-1.3.1.linux.x86_64.deb" \
-    CLAMAV_LATEST_STABLE_SIG_URL="https://www.clamav.net/downloads/production/clamav-1.3.1.linux.x86_64.deb.sig" \
     CLAMAV_MILTERCONF_FILE="/usr/local/etc/clamav-milter.conf" \
     ENABLE_OPENDKIM="false" \
     POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION="defer" \
@@ -83,6 +81,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(texinfo) && \
     TEMP_PACKAGES+=(valgrind) && \
     TEMP_PACKAGES+=(zlib1g-dev) && \
+    TEMP_PACKAGES+=(jq) && \
     # Install packages.
     apt-get update && \
     apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y --no-install-recommends \
@@ -132,6 +131,8 @@ RUN set -x && \
     mkdir -p /var/spool/postfix/postgrey && \
     popd && \
     # Install clamav
+    CLAMAV_LATEST_STABLE_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /x86_64.deb$/) && \
+    CLAMAV_LATEST_STABLE_SIG_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /x86_64.deb.sig$/) && \
     curl --location --output /tmp/clamav.deb "${CLAMAV_LATEST_STABLE_URL}" && \
     curl --location --output /tmp/clamav.deb.sig "${CLAMAV_LATEST_STABLE_SIG_URL}" && \
     # /talos.gpg is from clamav downloads > talos pgp public key
@@ -149,9 +150,9 @@ RUN set -x && \
     popd && \
     # Get postfix source & signature & author key
     mkdir -p /src/postfix && \
-    POSTFIX_STABLE_FAMILY="$(curl http://ftp.porcupine.org/mirrors/postfix-release/index.html | grep -oP 'Postfix [\d.]+ stable release' | grep -v candidate | head -1 | grep -oP '[\d.]+')" && \
-    POSTFIX_STABLE_DOWNLOAD_SOURCE_FILE="$(curl http://ftp.porcupine.org/mirrors/postfix-release/index.html | grep -P '<a href=\"official/postfix-' | grep "$POSTFIX_STABLE_FAMILY" | grep '.tar.gz\">Source code</a>' | head -1 | cut -d \" -f 2)" && \
-    POSTFIX_STABLE_DOWNLOAD_SOURCE_GPG2="$(curl http://ftp.porcupine.org/mirrors/postfix-release/index.html | grep -P '<a href=\"official/postfix-' | grep "$POSTFIX_STABLE_FAMILY" | grep '.tar.gz.gpg2\">GPG signature</a>' | head -1 | cut -d \" -f 2)" && \
+    POSTFIX_STABLE_FAMILY="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk '/[0-9] stable release</{print $3}')" && \
+    POSTFIX_STABLE_DOWNLOAD_SOURCE_FILE="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk -F'"' -v pat="$POSTFIX_STABLE_FAMILY" '$0 ~ pat && /<a href="official\/postfix-(.*)\.tar\.gz"/ {print $2}')" && \
+    POSTFIX_STABLE_DOWNLOAD_SOURCE_GPG2="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk -F'"' -v pat="$POSTFIX_STABLE_FAMILY" '$0 ~ pat && /<a href="official\/postfix-(.*)\.tar\.gz\.gpg2"/ {print $2}')" && \
     curl --location --output /src/postfix.tar.gz "http://ftp.porcupine.org/mirrors/postfix-release/${POSTFIX_STABLE_DOWNLOAD_SOURCE_FILE}" && \
     curl --location --output /src/postfix.tar.gz.gpg2 "http://ftp.porcupine.org/mirrors/postfix-release/${POSTFIX_STABLE_DOWNLOAD_SOURCE_GPG2}" && \
     curl --location --output /src/wietse.pgp "${WIETSE_PGP_KEY_URL}" && \
