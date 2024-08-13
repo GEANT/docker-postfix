@@ -135,11 +135,11 @@ RUN set -x && \
     CLAMAV_LATEST_STABLE_SIG_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /x86_64.deb.sig$/) && \
     curl --location --output /tmp/clamav.deb "${CLAMAV_LATEST_STABLE_URL}" && \
     curl --location --output /tmp/clamav.deb.sig "${CLAMAV_LATEST_STABLE_SIG_URL}" && \
-    # /talos.gpg is from clamav downloads > talos pgp public key
-    gpg2 --import /talos.gpg && \
+    curl --location --output /tmp/talos.gpg "https://docs.clamav.net/manual/cisco-talos.gpg" && \
+    gpg2 --import /tmp/talos.gpg && \
     gpg2 --verify /tmp/clamav.deb.sig /tmp/clamav.deb || exit 1 && \
     apt-get install -y /tmp/clamav.deb && \
-    rm -f /tmp/clamav.deb /tmp/clamav.deb.sig && \
+    rm -f /tmp/clamav.deb /tmp/clamav.deb.sig /tmp/talos.gpg && \
     # Get postfix-policyd-spf-perl
     mkdir -p /src/postfix-policyd-spf-perl && \
     git clone git://git.launchpad.net/postfix-policyd-spf-perl /src/postfix-policyd-spf-perl && \
