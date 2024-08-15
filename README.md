@@ -357,13 +357,15 @@ If using postfix table files, it is recommened to place all files into a single 
 | `/etc/postfix/tables/postscreen_access.cidr` | [cidr](http://www.postfix.org/cidr_table.5.html) | It is automatically added to postfix's ['postscreen_access_list'](http://www.postfix.org/postconf.5.html#postscreen_access_list) (after [`permit_mynetworks`](http://www.postfix.org/postconf.5.html#permit_mynetworks)). | Run helper command `update_postscreen_access` (see below) |
 | `/etc/postfix/tables/sender_access.hash` | [hash](http://www.postfix.org/DATABASE_README.html#types) | It is automatically added to postfix's [`check_sender_access`](http://www.postfix.org/postconf.5.html#check_sender_access). | Run helper command `update_sender_access` (see below) |
 | `/etc/postfix/tables/recipient_access.hash` | [hash](http://www.postfix.org/DATABASE_README.html#types) | It is automatically added to postfix's [`check_recipient_access`](http://www.postfix.org/postconf.5.html#check_recipient_access), and the final `smtpd_recipient_restrictions` action becomes `defer` (from the default of `permit`).  | Run helper command `check_recipient_access` (see below) |
+| `SENDER_ACCESS_REGEXP` | Optional | | Set to `true` to use regex instead of exact match |
+| `CHECK_RECIPIENT_ACCESS_REGEXP` | Optional | | Set to `true` to use regex instead of exact match |
 
 ### Postgrey whitelist files
 
 For the format of this file, see the [postgrey manpage](https://linux.die.net/man/8/postgrey).
 
 | Configuration file (with respect to container) | If this file is present... | After modifying... |
-|-----|-----|-----| 
+|-----|-----|-----|
 | `/etc/postgrey/postgrey_whitelist_clients.local` | It is merged with the regularly updated [system whitelist](https://postgrey.schweikert.ch/pub/postgrey_whitelist_clients). | Run helper command `update_postgrey_whitelist` (see below). |
 
 The system whitelist is downloaded from <https://postgrey.schweikert.ch/pub/postgrey_whitelist_clients> once every 24 hours if postgrey is enabled.

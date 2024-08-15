@@ -141,15 +141,19 @@ CHECK_RECIPIENT_ACCESS=""
   # ========== START smtpd_recipient_restrictions ==========
 
   echo "smtpd_recipient_restrictions = "
-    echo "    permit_mynetworks,"
-
     echo "    check_client_access cidr:/etc/postfix/client_access.cidr,"
 
     if [ "${POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_SASL_AUTHENTICATED}" = "true" ]; then
       echo "    permit_sasl_authenticated,"
     fi
 
-    echo "    check_sender_access hash:/etc/postfix/sender_access.hash,"
+    if [ "${SENDER_ACCESS_REGEXP}" = "true" ]; then
+      echo "    check_sender_access regexp:/etc/postfix/sender_access.hash,"
+    else
+      echo "    check_sender_access hash:/etc/postfix/sender_access.hash,"
+    fi
+
+    echo "    permit_mynetworks,"
 
     echo "    reject_unauth_destination,"
 
@@ -172,10 +176,15 @@ CHECK_RECIPIENT_ACCESS=""
 
     # If local recipient_access.hash file exists, add to check_recipient_access 
     if [ -f "/etc/postfix/tables/recipient_access.hash" ]; then
-      if [ "$CHECK_RECIPIENT_ACCESS" = "" ]; then
-        CHECK_RECIPIENT_ACCESS="hash:/etc/postfix/recipient_access.hash"
+      if [ "$CHECK_RECIPIENT_ACCESS_REGEXP" = "true" ]; then
+        MATCH_TYPE="regexp"
       else
-        CHECK_RECIPIENT_ACCESS="$CHECK_RECIPIENT_ACCESS, hash:/etc/postfix/recipient_access.hash"
+        MATCH_TYPE="hash"
+      fi
+      if [ "$CHECK_RECIPIENT_ACCESS" = "" ]; then
+        CHECK_RECIPIENT_ACCESS="${MATCH_TYPE}:/etc/postfix/recipient_access.hash"
+      else
+        CHECK_RECIPIENT_ACCESS="$CHECK_RECIPIENT_ACCESS, ${MATCH_TYPE}:/etc/postfix/recipient_access.hash"
       fi
     fi
 
