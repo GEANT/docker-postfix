@@ -135,7 +135,7 @@ RUN set -x && \
     CLAMAV_LATEST_STABLE_SIG_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /x86_64.deb.sig$/) && \
     curl --location --output /tmp/clamav.deb "${CLAMAV_LATEST_STABLE_URL}" && \
     curl --location --output /tmp/clamav.deb.sig "${CLAMAV_LATEST_STABLE_SIG_URL}" && \
-    curl --location --output /tmp/talos.gpg "https://docs.clamav.net/manual/cisco-talos.gpg" && \
+    curl --user-agent "Mozilla" --location --output /tmp/talos.gpg "https://docs.clamav.net/manual/cisco-talos.gpg" && \
     gpg2 --import /tmp/talos.gpg && \
     gpg2 --verify /tmp/clamav.deb.sig /tmp/clamav.deb || exit 1 && \
     apt-get install -y /tmp/clamav.deb && \
