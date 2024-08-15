@@ -147,7 +147,7 @@ CHECK_RECIPIENT_ACCESS=""
       echo "    permit_sasl_authenticated,"
     fi
 
-    if [ "${SENDER_ACCESS_REGEXP}" = "true" ]; then
+    if [ "${POSTFIX_SENDER_ACCESS_REGEXP}" = "true" ]; then
       echo "    check_sender_access regexp:/etc/postfix/sender_access.hash,"
     else
       echo "    check_sender_access hash:/etc/postfix/sender_access.hash,"
@@ -176,7 +176,7 @@ CHECK_RECIPIENT_ACCESS=""
 
     # If local recipient_access.hash file exists, add to check_recipient_access 
     if [ -f "/etc/postfix/tables/recipient_access.hash" ]; then
-      if [ "$CHECK_RECIPIENT_ACCESS_REGEXP" = "true" ]; then
+      if [ "$POSTFIX_CHECK_RECIPIENT_ACCESS_REGEXP" = "true" ]; then
         MATCH_TYPE="regexp"
       else
         MATCH_TYPE="hash"
