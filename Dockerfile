@@ -35,13 +35,13 @@ RUN set -x && \
     KEPT_PACKAGES+=(libberkeleydb-perl) && \
     KEPT_PACKAGES+=(libicu-dev) && \
     KEPT_PACKAGES+=(libjson-c5) && \
-    KEPT_PACKAGES+=(libldap-2.5-0) && \
+    KEPT_PACKAGES+=(libldap-2.4-2) && \
     KEPT_PACKAGES+=(libmail-spf-perl) && \
     KEPT_PACKAGES+=(libmilter1.0.1) && \
     KEPT_PACKAGES+=(libncurses6) && \
     KEPT_PACKAGES+=(libnet-server-perl) && \
     KEPT_PACKAGES+=(libnetaddr-ip-perl) && \
-    KEPT_PACKAGES+=(libpcre2-posix3) && \
+    KEPT_PACKAGES+=(libpcre2-posix2) && \
     KEPT_PACKAGES+=(libpcre3) && \
     KEPT_PACKAGES+=(libsasl2-2) && \
     KEPT_PACKAGES+=(libsys-hostname-long-perl) && \
