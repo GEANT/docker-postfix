@@ -7,10 +7,10 @@ build:
   variables:
     GIT_STRATEGY: clone
   script:
-    - docker build --no-cache --build-arg CACHEBUST=$(date +%s) -t $CI_PROJECT_NAME:$CI_COMMIT_TAG .
+    - docker build --no-cache --build-arg CACHEBUST=$(date +%s) -t postfix:$CI_COMMIT_TAG .
     - echo $AFACTORY_TOKEN | docker login -u $AFACTORY_USER --password-stdin $AFACTORY_URL
-    - docker tag $CI_PROJECT_NAME:$CI_COMMIT_TAG $AFACTORY_URL/geant-devops-docker/$CI_PROJECT_NAME:$CI_COMMIT_TAG
-    - docker image push $AFACTORY_URL/geant-devops-docker/$CI_PROJECT_NAME:$CI_COMMIT_TAG
+    - docker tag postfix:$CI_COMMIT_TAG $AFACTORY_URL/geant-devops-docker/postfix:$CI_COMMIT_TAG
+    - docker image push $AFACTORY_URL/geant-devops-docker/postfix:$CI_COMMIT_TAG
   only:
     - tags
   tags:
@@ -22,6 +22,6 @@ manual-build:
   variables:
     GIT_STRATEGY: clone
   script:
-    - docker build --no-cache --build-arg CACHEBUST=$(date +%s) -t $CI_PROJECT_NAME .
+    - docker build --no-cache --build-arg CACHEBUST=$(date +%s) -t postfix .
   tags:
     - gitlab-runner03-shell01-tag4
