@@ -13,6 +13,7 @@ build:
     - docker tag postfix:$CI_COMMIT_TAG $AFACTORY_URL/geant-devops-docker/postfix:$CI_COMMIT_TAG
     - docker image push $AFACTORY_URL/geant-devops-docker/postfix:$CI_COMMIT_TAG
     # Push the image using the 'latest' tag
+    - curl -u"${AFACTORY_USER}:${AFACTORY_TOKEN}" -X DELETE https://${AFACTORY_URL}/artifactory/geant-devops-docker/postfix/latest
     - docker tag postfix:$CI_COMMIT_TAG $AFACTORY_URL/geant-devops-docker/postfix:latest
     - docker image push $AFACTORY_URL/geant-devops-docker/postfix:latest
   only:
