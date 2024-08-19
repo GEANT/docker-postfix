@@ -1,7 +1,12 @@
-FROM debian:bullseye-20230502-slim
+FROM debian:bullseye-20231218-slim
 
 ENV CLAMAV_CLAMDCONF_FILE="/usr/local/etc/clamd.conf" \
     CLAMAV_FRESHCLAMCONF_FILE="/usr/local/etc/freshclam.conf" \
+    #CLAMAV_LATEST_STABLE_SOURCE_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /tar.gz$/) && \
+    #CLAMAV_LATEST_STABLE_SOURCE_SIG_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /tar.gz.sig$/) && \
+    CLAMAV_LATEST_STABLE_SOURCE_URL="https://www.clamav.net/downloads/production/clamav-1.4.0.tar.gz" \
+    CLAMAV_LATEST_STABLE_SOURCE_SIG_URL="https://www.clamav.net/downloads/production/clamav-1.4.0.tar.gz.sig" \
+    CLAMAV_GPG_URL="https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg" \
     CLAMAV_MILTERCONF_FILE="/usr/local/etc/clamav-milter.conf" \
     ENABLE_OPENDKIM="false" \
     POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION="defer" \
@@ -84,6 +89,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(jq) && \
     # Install packages.
     apt-get update && \
+    # apt-get dist-upgrade -y && \ does this risk to break the build?
     apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y --no-install-recommends \
         ${KEPT_PACKAGES[@]} \
         ${TEMP_PACKAGES[@]} \
@@ -130,17 +136,33 @@ RUN set -x && \
     ln -s /opt/postgrey/postgrey /usr/local/bin/postgrey && \
     mkdir -p /var/spool/postfix/postgrey && \
     popd && \
+    # Install rust
+    curl --location --output /src/rustup.sh https://sh.rustup.rs && \
+    chmod a+x /src/rustup.sh && \
+    /src/rustup.sh -y && \
+    source "$HOME/.cargo/env" && \
     # Install clamav
-    CLAMAV_LATEST_STABLE_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /x86_64.deb$/) && \
-    CLAMAV_LATEST_STABLE_SIG_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /x86_64.deb.sig$/) && \
-    CLAMAV_GPG_URL="https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg" && \
-    curl --location --output /tmp/clamav.deb "$CLAMAV_LATEST_STABLE_URL" && \
-    curl --location --output /tmp/clamav.deb.sig "$CLAMAV_LATEST_STABLE_SIG_URL" && \
+    mkdir -p /src/clamav && \
+    curl --location --output /src/clamav.tar.gz "${CLAMAV_LATEST_STABLE_SOURCE_URL}" && \
+    curl --location --output /src/clamav.tar.gz.sig "${CLAMAV_LATEST_STABLE_SOURCE_SIG_URL}" && \
     curl --location --output /tmp/talos.gpg "$CLAMAV_GPG_URL" && \
     gpg2 --import /tmp/talos.gpg && \
-    gpg2 --verify /tmp/clamav.deb.sig /tmp/clamav.deb || exit 1 && \
-    apt-get install -y /tmp/clamav.deb && \
-    rm -f /tmp/clamav.deb /tmp/clamav.deb.sig /tmp/talos.gpg && \
+    gpg2 --verify /src/clamav.tar.gz.sig /src/clamav.tar.gz || exit 1 && \
+    tar xf /src/clamav.tar.gz -C /src/clamav && \
+    pushd "$(find /src/clamav -maxdepth 1 -type d | tail -1)" && \
+    mkdir -p ./build && \
+    pushd ./build && \
+    cmake .. && \
+    cmake --build . && \
+    # ctest && \  # This works, but takes a long time
+    cmake --build . --target install && \
+    ldconfig && \
+    mkdir -p /var/lib/clamav && \
+    mkdir -p /run/freshclam && \
+    mkdir -p /run/clamav-milter && \
+    mkdir -p /run/clamd && \
+    popd && \
+    popd && \
     # Get postfix-policyd-spf-perl
     mkdir -p /src/postfix-policyd-spf-perl && \
     git clone git://git.launchpad.net/postfix-policyd-spf-perl /src/postfix-policyd-spf-perl && \
@@ -207,6 +229,7 @@ RUN set -x && \
     chmod a+x /src/deploy-s6-overlay.sh && \
     /src/deploy-s6-overlay.sh && \
     # Clean up
+    rustup self uninstall -y && \
     apt-get remove -y ${TEMP_PACKAGES[@]} && \
     apt-get autoremove -y && \
     apt-get clean -y && \
