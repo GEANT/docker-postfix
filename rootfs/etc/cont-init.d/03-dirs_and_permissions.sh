@@ -62,8 +62,8 @@ mkdir -p /var/spool/postfix/saved
 chown -R postfix /var/spool/postfix/saved
 mkdir -p /var/spool/postfix/trace
 chown -R postfix /var/spool/postfix/trace
-chown -R root /etc/postfix/tables
-chmod -R g-w,o-w /etc/postfix/tables
+# chown -R root /etc/postfix/tables  # postfix tables are set read-only by Nomad
+# chmod -R g-w,o-w /etc/postfix/tables  # postfix tables are set read-only by Nomad
 chown -R root /etc/postfix/local_aliases
 chmod -R g-w,o-w /etc/postfix/local_aliases
 
