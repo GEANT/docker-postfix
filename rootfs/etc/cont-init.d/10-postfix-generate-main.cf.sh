@@ -153,7 +153,9 @@ CHECK_RECIPIENT_ACCESS=""
       echo "    check_sender_access hash:/etc/postfix/sender_access.hash,"
     fi
 
-    echo "    permit_mynetworks,"
+    if [ "${POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_MYNETWORK}" = "true" ]; then
+      echo "    permit_mynetworks,"
+    fi
 
     echo "    reject_unauth_destination,"
 
