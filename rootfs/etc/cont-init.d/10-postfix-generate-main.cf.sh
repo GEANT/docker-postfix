@@ -217,7 +217,7 @@ CHECK_RECIPIENT_ACCESS=""
 
   # ========== END smtpd_data_restrictions ==========
 
-  # If local transport_maps.hash file exists, add transport_maps 
+  # If local transport.hash file exists, add transport_maps to main.cf
   if [ -f "/etc/postfix/tables/transport.hash" ]; then
     echo "transport_maps = hash:/etc/postfix/transport.hash"
   fi

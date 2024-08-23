@@ -11,4 +11,4 @@ set -x
 /usr/local/bin/update_postscreen_access
 /usr/local/bin/update_dnsbl_reply
 /usr/local/bin/update_recipient_access
-/usr/local/bin/update_transport_maps
+/usr/local/bin/update_transport

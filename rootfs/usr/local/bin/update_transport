@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 
-TRANSPORT_MAPS_HASH_FILE="/etc/postfix/transport_maps.hash"
-TRANSPORT_MAPS_HASH_FILE_LOCAL="/etc/postfix/tables/transport_maps.hash"
+TRANSPORT_MAPS_HASH_FILE="/etc/postfix/transport.hash"
+TRANSPORT_MAPS_HASH_FILE_LOCAL="/etc/postfix/tables/transport.hash"
 
-# Remove existing transport_maps.hash
+# Remove existing transport.hash
 rm "${TRANSPORT_MAPS_HASH_FILE}" > /dev/null 2>&1
 touch "${TRANSPORT_MAPS_HASH_FILE}"
 
 # TODO: add fail2ban file
 
 {
-  # Import local entries into transport_maps.hash
+  # Import local entries into transport.hash
   if [ -f "${TRANSPORT_MAPS_HASH_FILE_LOCAL}" ]; then
     echo ""
     echo "## Entries from ${TRANSPORT_MAPS_HASH_FILE_LOCAL}"
