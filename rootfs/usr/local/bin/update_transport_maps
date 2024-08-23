@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+
+TRANSPORT_MAPS_HASH_FILE="/etc/postfix/transport_maps.hash"
+TRANSPORT_MAPS_HASH_FILE_LOCAL="/etc/postfix/tables/transport_maps.hash"
+
+# Remove existing transport_maps.hash
+rm "${TRANSPORT_MAPS_HASH_FILE}" > /dev/null 2>&1
+touch "${TRANSPORT_MAPS_HASH_FILE}"
+
+# TODO: add fail2ban file
+
+{
+  # Import local entries into transport_maps.hash
+  if [ -f "${TRANSPORT_MAPS_HASH_FILE_LOCAL}" ]; then
+    echo ""
+    echo "## Entries from ${TRANSPORT_MAPS_HASH_FILE_LOCAL}"
+    cat "${TRANSPORT_MAPS_HASH_FILE_LOCAL}"
+    echo ""
+  fi
+} > "${TRANSPORT_MAPS_HASH_FILE}"
+
+postmap "${TRANSPORT_MAPS_HASH_FILE}"
+
+# If postfix is running, update
+if postfix status > /dev/null 2>&1; then
+  postfix reload
+fi

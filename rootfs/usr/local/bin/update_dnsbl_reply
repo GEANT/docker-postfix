@@ -4,14 +4,14 @@
 DNSBL_REPLY_TEXTHASH_FILE="/etc/postfix/dnsbl_reply.texthash"
 DNSBL_REPLY_TEXTHASH_FILE_LOCAL="/etc/postfix/tables/dnsbl_reply.texthash"
 
-# Remove existing client_access.cidr
+# Remove existing dnsbl_reply.texthash
 rm "${DNSBL_REPLY_TEXTHASH_FILE}" > /dev/null 2>&1
 touch "${DNSBL_REPLY_TEXTHASH_FILE}"
 
 # TODO: add fail2ban file
 
 {
-  # Import local entries into client_access.cidr
+  # Import local entries into dnsbl_reply.texthash
   if [ -f "${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}" ]; then
     echo ""
     echo "## Entries from ${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}"

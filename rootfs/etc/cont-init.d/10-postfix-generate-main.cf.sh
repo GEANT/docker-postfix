@@ -217,6 +217,11 @@ CHECK_RECIPIENT_ACCESS=""
 
   # ========== END smtpd_data_restrictions ==========
 
+  # If local transport_maps.hash file exists, add transport_maps 
+  if [ -f "/etc/postfix/tables/transport.hash" ]; then
+    echo "transport_maps = hash:/etc/postfix/transport.hash"
+  fi
+
   # Do we enable & configure DKIM?
   if [ "${ENABLE_OPENDKIM}" = "true" ]; then
     echo "milter_default_action = accept"
