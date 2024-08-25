@@ -11,9 +11,9 @@ Postfix is Wietse Venema's excellent mail server.
 3. [CI](#ci)
 4. [Services](#services)
 5. [Deployment Recipes](#deployment-recipes)
-    1. [Wrap a Local Exchange Server](#wrap-a-local-exchange-server)
-6. [Configuration examples](#configuration-examples)
-7. [Environment Variables](#environment-variables)
+    1. [Configuration examples](#configuration-examples)
+    2. [Wrap a Local Exchange Server](#wrap-a-local-exchange-server)
+6. [Environment Variables](#environment-variables)
     1. [Container configuration](#container-configuration)
     2. [Syslog configuration](#syslog-configuration)
     3. [Postfix configuration](#postfix-configuration)
@@ -21,31 +21,31 @@ Postfix is Wietse Venema's excellent mail server.
     4. [LDAP Recipient Verification](#ldap-recipient-verification)
     5. [OpenDKIM Configuration](#opendkim-configuration)
     6. [ClamAV Configuration](#clamav-configuration)
-8. [Configuration Files](#configuration-files)
+7. [Configuration Files](#configuration-files)
     1. [Postfix table files](#postfix-table-files)
     2. [Postgrey whitelist files](#postgrey-whitelist-files)
     3. [Local Aliases](#local-aliases)
-9. [Paths](#paths)
+8. [Paths](#paths)
     1. [Required to be mapped](#required-to-be-mapped)
     2. [Optional](#optional)
-10. [DKIM](#dkim)
+9. [DKIM](#dkim)
     1. [Generating a DKIM key](#generating-a-dkim-key)
-11. [LDAP](#ldap)
-12. [Helper Commands](#helper-commands)
+10. [LDAP](#ldap)
+11. [Helper Commands](#helper-commands)
     1. [Reloading Postfix's table files](#reloading-postfixs-table-files)
-13. [Postfix's Order of Checks/Restrictions](#postfixs-order-of-checksrestrictions)
-14. [Testing](#testing)
-15. [Getting help](#getting-help)
-16. [References](#references)
+12. [Postfix's Order of Checks/Restrictions](#postfixs-order-of-checksrestrictions)
+13. [Testing](#testing)
+14. [Getting help](#getting-help)
+15. [References](#references)
 
 ## Credits
 
 This container is a fork of [mikenye/postfix](https://github.com/mikenye/docker-postfix)  
 For the sake of simplicity we maintain a fork at Géant, so that we can apply changes in a timely manner.
 
-The repository is mirrored at:
+The repository is available at:
 
-* Codeberg as [GEANT/docker-postfix](https://codeberg.org/GEANT/docker-postfix)
+* Codeberg [GEANT/docker-postfix](https://codeberg.org/GEANT/docker-postfix)
 * Github [GEANT/docker-postfix](https://github.com/GEANT/docker-postfix)
 
 The docker image can be pulled from GÉANT Artifactory: [postfix](https://artifactory.software.geant.org/ui/native/geant-devops-docker/postfix/)
@@ -94,6 +94,13 @@ This container implement's the excellent [s6-overlay](https://github.com/just-co
 
 ## Deployment Recipes
 
+### Configuration examples
+
+The documentation includes two diffrerent examples for Nomad and Docker-compose
+
+* [Nomad](./doc/nomad/README.md)
+* [Docker-Compose](./doc/docker-compose/README.md)
+
 ### Wrap a Local Exchange Server
 
 ![Wrapping an Exchange Server](./doc/.pics/deployment_recipe_wrap_exchange.png?raw=true)
@@ -123,13 +130,6 @@ From a networking perspective:
 
 * The site's internet router is configured to NAT incoming connections on TCP port 25 through to the docker host running `mail_in` on port TCP 2525.
 * The site's Exchange server is configured to send email (via "smart host") to the docker host (which is hard-coded to TCP port 25)
-
-## Configuration examples
-
-The documentation includes two diffrerent examples for Nomad and Docker-compose
-
-* [Nomad](./doc/nomad/README.md)
-* [Docker-Compose](./doc/docker-compose/README.md)
 
 ## Environment Variables
 
