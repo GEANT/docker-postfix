@@ -1,13 +1,5 @@
 #
-# Docker Postfix container with ClamAV, and OpenDKIM
-#
-# "queue:/var/spool/postfix:rw"
-# "clamav:/var/lib/clamav:rw"
-# "tables:/etc/postfix/tables:ro"
-# "postgrey:/etc/postgrey:ro"
-#
-# external DNS records should be set up as explained here:
-# https://datatracker.ietf.org/doc/html/rfc6186
+# Docker Postfix ingress email with ClamAV, and OpenDKIM
 #
 variable "key_names" {
   type    = list(string)

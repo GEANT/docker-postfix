@@ -96,9 +96,9 @@ This container implement's the excellent [s6-overlay](https://github.com/just-co
 
 ### Configuration examples
 
-The documentation includes two diffrerent examples for Nomad and Docker-compose
+The documentation includes two diffrerent examples for Nomad/Terraform and Docker-compose
 
-* [Nomad](./doc/nomad/)
+* [Nomad/Terraform](./doc/nomad/)
 * [Docker-Compose](./doc/docker-compose/README.md)
 
 ### Wrap a Local Exchange Server
