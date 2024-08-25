@@ -13,7 +13,9 @@ For the automation we use Puppet and Terraform. With puppet we upload the keys o
 
 Part of the keys are split per environment. Each environment name matches a workspace in terraform. For instance `test`, `uat` and `prod`.
 
-## Files
+## Diagram & Files
+
+![Mail server Nomad Architecture](../img/mailserver_nomad.jpg?raw=true)
 
 Files included in this example
 
@@ -24,6 +26,7 @@ doc
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-in.nomad](./mailserver-in.nomad)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-out.nomad](./mailserver-out.nomad)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[main.tf](./main.tf)
+
 
 ## DKIM Keys
 
