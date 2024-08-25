@@ -47,6 +47,8 @@ The repository is mirrored at:
 * Codeberg as [GEANT/docker-postfix](https://codeberg.org/GEANT/docker-postfix)
 * Github [GEANT/docker-postfix](https://github.com/GEANT/docker-postfix)
 
+The docker image can be pulled from GÉANT Artifactory: [postfix](https://artifactory.software.geant.org/ui/native/geant-devops-docker/postfix/)
+
 ## Preface
 
 This container attempts to simplify and streamline setting up inbound and outbound mail relays, to protect and enhance self hosted email servers (eg: Microsoft Exchange). However, if you find an alternate use, please let me know so I can add to "Deployment Recipes".
@@ -66,13 +68,7 @@ Apart from basic email relaying, the container can optionally:
 
 The container is fully configured via environment variables - each service's configuration files built from environment variables on container start. It also supports some configuration files via volume mappings.
 
-Currently supported docker architectures are `linux/386`, `linux/amd64`, `linux/arm/v7` and `linux/arm64`.
-
----
-
-**Please note - docker hub cuts off this readme as it is quite long. To view the full readme [click here](https://github.com/mikenye/docker-postfix/blob/master/README.md).**
-
----
+Currently supported docker architecture is `linux/amd64`.
 
 ## CI
 
@@ -127,162 +123,12 @@ From a networking perspective:
 * The site's internet router is configured to NAT incoming connections on TCP port 25 through to the docker host running `mail_in` on port TCP 2525.
 * The site's Exchange server is configured to send email (via "smart host") to the docker host (which is hard-coded to TCP port 25)
 
-An example `docker-compose.yml` file is follows:
+## Examples
 
-```yaml
-version: '3.8'
+The documentation includes two diffrerent examples for Nomad and Docker-compose
 
-volumes:
-  queue_out:
-    driver: local
-  queue_in:
-    driver: local
-  certs:
-    driver: local
-  dkim:
-    driver: local
-  clamav_in:
-    driver: local
-  clamav_out:
-    driver: local
-  postgrey_in:
-    driver: local
-  tables_in:
-    driver: local
-  aliases_in:
-    driver: local
-  asupdata_in:
-    driver: local
-  logs_in:
-    driver: local
-  logs_out:
-    driver: local
-
-services:
-
-  mail_out:
-    image: ghcr.io/mikenye/postfix:latest
-    container_name: mail_out
-    restart: always
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "10m"
-    ports:
-      - "25:25"
-    environment:
-      TZ: "Australia/Perth"
-      POSTMASTER_EMAIL: "postmaster@yourdomain.tld"
-      POSTFIX_INET_PROTOCOLS: "ipv4"
-      POSTFIX_MYORIGIN: "mail.yourdomain.tld"
-      POSTFIX_PROXY_INTERFACES: "your.external.IP.address"
-      POSTFIX_MYNETWORKS: "your.local.LAN.subnet/prefix"
-      POSTFIX_MYDOMAIN: "yourdomain.tld"
-      POSTFIX_MYHOSTNAME: "mail.yourdomain.tld"
-      POSTFIX_MAIL_NAME: "outbound"
-      POSTFIX_SMTPD_TLS_CHAIN_FILES: "/etc/postfix/certs/privkey.pem, /etc/postfix/certs/fullchain.pem"
-      POSTFIX_SMTP_TLS_CHAIN_FILES: "/etc/postfix/certs/privkey.pem, /etc/postfix/certs/fullchain.pem"
-      POSTFIX_SMTPD_TLS_SECURITY_LEVEL: "may"
-      POSTFIX_SMTPD_TLS_LOGLEVEL: 1
-      POSTFIX_REJECT_INVALID_HELO_HOSTNAME: "false"
-      POSTFIX_REJECT_NON_FQDN_HELO_HOSTNAME: "false"
-      POSTFIX_REJECT_UNKNOWN_HELO_HOSTNAME: "false"
-      ENABLE_OPENDKIM: "true"
-      OPENDKIM_SIGNINGTABLE: "/etc/mail/dkim/SigningTable"
-      OPENDKIM_KEYTABLE: "/etc/mail/dkim/KeyTable"
-      OPENDKIM_MODE: "s"
-      OPENDKIM_INTERNALHOSTS: "your.local.LAN.subnet/prefix"
-      OPENDKIM_LOGRESULTS: "true"
-      OPENDKIM_LOGWHY: "true"
-      ENABLE_CLAMAV: "true"
-      CLAMAV_MILTER_REPORT_HOSTNAME: "mail.yourdomain.tld"
-    volumes:
-      - "certs:/etc/postfix/certs:ro"
-      - "dkim:/etc/mail/dkim:rw"
-      - "clamav_out:/var/lib/clamav:rw"
-      - "queue_out:/var/spool/postfix:rw"
-      - "logs_out:/var/log:rw"
-
-  mail_in:
-    image: ghcr.io/mikenye/postfix:latest
-    container_name: mail_in
-    restart: always
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "10"
-        max-size: "10m"
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-    ports:
-      - "2525:25"
-    environment:
-      TZ: "Australia/Perth"
-      POSTMASTER_EMAIL: "postmaster@yourdomain.tld"
-      POSTFIX_INET_PROTOCOLS: "ipv4"
-      POSTFIX_MYORIGIN: "mail.yourdomain.tld"
-      POSTFIX_PROXY_INTERFACES: "your.external.IP.address"
-      POSTFIX_MYDOMAIN: "yourdomain.tld"
-      POSTFIX_MYHOSTNAME: "mail.yourdomain.tld"
-      POSTFIX_MAIL_NAME: "inbound"
-      POSTFIX_SMTPD_TLS_CHAIN_FILES: "/etc/postfix/certs/privkey.pem, /etc/postfix/certs/fullchain.pem"
-      POSTFIX_SMTP_TLS_CHAIN_FILES: "/etc/postfix/certs/privkey.pem, /etc/postfix/certs/fullchain.pem"
-      POSTFIX_SMTPD_TLS_SECURITY_LEVEL: "may"
-      POSTFIX_SMTPD_TLS_LOGLEVEL: 1
-      POSTFIX_RELAYHOST: "exchange.server.IP.addr"
-      POSTFIX_RELAY_DOMAINS: "yourdomain.tld,someotherdomain.tld"
-      POSTFIX_DNSBL_SITES: "hostkarma.junkemailfilter.com=127.0.0.2, bl.spamcop.net, cbl.abuseat.org=127.0.0.2, zen.spamhaus.org"
-      ENABLE_SUBMISSION_PORT: "true"
-      ENABLE_OPENDKIM: "true"
-      OPENDKIM_MODE: "v"
-      OPENDKIM_LOGRESULTS: "true"
-      OPENDKIM_LOGWHY: "true"
-      ENABLE_SPF: "true"
-      ENABLE_CLAMAV: "true"
-      CLAMAV_MILTER_REPORT_HOSTNAME: "mail.yourdomain.tld"
-      ENABLE_POSTGREY: "true"
-      ENABLE_LDAP_RECIPIENT_ACCESS: "true"
-      POSTFIX_LDAP_SERVERS: "active.directory.server.IP,active.directory.server.IP"
-      POSTFIX_LDAP_BIND_DN: "CN=mailrelay,OU=Service Accounts,OU=Users,DC=yourdomain,DC=tld"
-      POSTFIX_LDAP_BIND_PW: "12345"
-      POSTFIX_LDAP_SEARCH_BASE: "DC=yourdomain,DC=tld"
-    volumes:
-      - "certs:/etc/postfix/certs:ro"
-      - "queue_in:/var/spool/postfix:rw"
-      - "clamav_in:/var/lib/clamav:rw"
-      - "postgrey_in:/etc/postgrey:ro"
-      - "tables_in:/etc/postfix/tables:ro"
-      - "aliases_in:/etc/postfix/local_aliases:ro"
-      - "logs_in:/var/log:rw"
-```
-
-It is recommended to make your volume mounts somewhere you can access them, so you can edit files, load certificates, view logs easily, etc.
-
-For example, you could map through to a known local path:
-
-```yaml
-volumes:
-  queue_out:
-    driver: local
-      type: 'none'
-      o: 'bind'
-      device: '/opt/mail/queue_out'
-...
-```
-
-...or, another example useing NFS to a filer/server, eg:
-
-```yaml
-volumes:
-  queue_out:
-    driver: local
-      type: nfs
-      o: addr=1.2.3.4,rw
-      device: ":/vol/mail/queue_out"
-...
-```
+* [Nomad](./doc/nomad/README.md)
+* [Docker-Compose](./doc/docker-compose/README.md)
 
 ## Environment Variables
 
