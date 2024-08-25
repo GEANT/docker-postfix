@@ -19,12 +19,12 @@ Part of the keys are split per environment. Each environment name matches a work
 
 Files included in this example
 
-doc
-└─nomad
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[README.md](./README.md)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[backend.tf](./backend.tf)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-in.nomad](./mailserver-in.nomad)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-out.nomad](./mailserver-out.nomad)
+doc  
+└─nomad  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[README.md](./README.md)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[backend.tf](./backend.tf)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-in.nomad](./mailserver-in.nomad)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-out.nomad](./mailserver-out.nomad)  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[main.tf](./main.tf)
 
 ## DKIM Keys
