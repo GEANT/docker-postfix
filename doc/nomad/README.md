@@ -15,7 +15,7 @@ Part of the keys are split per environment. Each environment name matches a work
 
 ## Diagram & Files
 
-![Mail server Nomad Architecture](../img/mailserver_nomad.jpg?raw=true)
+![Mail server Nomad Architecture](../.pics/mailserver_nomad.jpg?raw=true)
 
 Files included in this example
 
@@ -26,7 +26,6 @@ doc
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-in.nomad](./mailserver-in.nomad)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[mailserver-out.nomad](./mailserver-out.nomad)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─[main.tf](./main.tf)
-
 
 ## DKIM Keys
 
@@ -78,4 +77,4 @@ destroying a resource
 terraform apply -destroy -target=nomad_job.mailserver-out
 ```
 
-:warning: It is mandatory to point a resource, because the storage is protected and destroying all the resources would fail
+:warning: It is mandatory to target a resource, because the storage is protected and destroying all the resources would fail
