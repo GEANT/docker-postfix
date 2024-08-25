@@ -4,10 +4,50 @@
 
 Postfix is Wietse Venema's excellent mail server.
 
-## Preface & Credits
+## Table of Contents
+
+1. [Credits](#credits)
+2. [Preface](#preface)
+3. [CI](#ci)
+4. [Services](#services)
+5. [Deployment Recipes](#deployment-recipes)
+    1. [Wrap a Local Exchange Server](#wrap-a-local-exchange-server)
+6. [Environment Variables](#environment-variables)
+    1. [Container configuration](#container-configuration)
+    2. [Syslog configuration](#syslog-configuration)
+    3. [Postfix configuration](#postfix-configuration)
+        1. [Backwards-Compatibility Safety Net Options](#backwards-compatibility-safety-net-options)
+    4. [LDAP Recipient Verification](#ldap-recipient-verification)
+    5. [OpenDKIM Configuration](#opendkim-configuration)
+    6. [ClamAV Configuration](#clamav-configuration)
+7. [Configuration Files](#configuration-files)
+    1. [Postfix table files](#postfix-table-files)
+    2. [Postgrey whitelist files](#postgrey-whitelist-files)
+    3. [Local Aliases](#local-aliases)
+8. [Paths](#paths)
+    1. [Required to be mapped](#required-to-be-mapped)
+    2. [Optional](#optional)
+9. [DKIM](#dkim)
+    1. [Generating a DKIM key](#generating-a-dkim-key)
+10. [LDAP](#ldap)
+11. [Helper Commands](#helper-commands)
+    1. [Reloading Postfix's table files](#reloading-postfixs-table-files)
+12. [Postfix's Order of Checks/Restrictions](#postfixs-order-of-checksrestrictions)
+13. [Testing](#testing)
+14. [Getting help](#getting-help)
+15. [References](#references)
+
+## Credits
 
 This container is a fork of [mikenye/postfix](https://github.com/mikenye/docker-postfix)  
 For the sake of simplicity we maintain a fork at Géant, so that we can apply changes in a timely manner.
+
+The repository is mirrored at:
+
+* Codeberg as [GEANT/docker-postfix](https://codeberg.org/GEANT/docker-postfix)
+* Github [GEANT/docker-postfix](https://github.com/GEANT/docker-postfix)
+
+## Preface
 
 This container attempts to simplify and streamline setting up inbound and outbound mail relays, to protect and enhance self hosted email servers (eg: Microsoft Exchange). However, if you find an alternate use, please let me know so I can add to "Deployment Recipes".
 
@@ -33,6 +73,12 @@ Currently supported docker architectures are `linux/386`, `linux/amd64`, `linux/
 **Please note - docker hub cuts off this readme as it is quite long. To view the full readme [click here](https://github.com/mikenye/docker-postfix/blob/master/README.md).**
 
 ---
+
+## CI
+
+CI is a work in progress.  
+The original CI was set to run on Github. At the moment we use an internal Gitlab CI, tirggered by tag creation.  
+We plan to move back to Action, but on Forgejo/Codeberg.
 
 ## Services
 
@@ -310,7 +356,7 @@ If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, the final `smtpd_recipient_restric
 |------------------------------------|-------------------------------------------------------------------------|
 | `POSTFIX_LDAP_SERVERS`             | Required. Comma separated list of LDAP servers. |
 | `POSTFIX_LDAP_VERSION`             | Optional. LDAP version. Default is `3` (which works with Active Directory). |
-| `POSTFIX_LDAP_QUERY_FILTER`        | Optional. LDAP query filter to find user/group emails. Default is `(&(|(objectclass=person)(objectclass=group))(proxyAddresses=smtp:%s))` which will find all user and group email addresses in Active Directory. |
+| `POSTFIX_LDAP_QUERY_FILTER`        | Optional. LDAP query filter to find user/group emails. Default is `(&(\|(objectclass=person)(objectclass=group))(proxyAddresses=smtp:%s))` which will find all user and group email addresses in Active Directory. |
 | `POSTFIX_LDAP_SEARCH_BASE`         | Required. The base DN in which to search for users/groups. eg: `DC=MyDomain,DC=tld`. |
 | `POSTFIX_LDAP_BIND_DN`             | Required. The account name to use to bind to the LDAP servers, specified in LDAP syntax, eg: `CN=svc-mailrelay,OU=Service Accounts,OU=Users,DC=MyDomain,DC=tld`. |
 | `POSTFIX_LDAP_BIND_PW`             | Required. The account password for the `POSTFIX_LDAP_BIND_DN` account. |
@@ -406,8 +452,7 @@ The system aliases file maps `postmaster`, `root`, `postfix` and `clamav` throug
 | `/etc/postfix/tables` | `ro` | Postfix's tables should be placed in here. Map if you need to use any of the **Postfix Table Files** listed above. |
 | `/etc/mail/dkim` | `rw` | DKIM private keys (and `KeyTable`/`SigningTable` files if used) to be placed here. |
 
-
-## DKIM 
+## DKIM
 
 ### Generating a DKIM key
 
@@ -415,13 +460,13 @@ When setting up DKIM, you can use this container to create your keys.
 
 Change to a directory on the host that will hold the public & private keys.
 
-```
+```bash
 cd /path/to/dkim/keys
 ```
 
 Generate a key with the following command (replacing `your.domain.name` with your domain name):
 
-```
+```bash
 docker run \
     --rm \
     -it \
@@ -473,7 +518,7 @@ See the [Postfix LDAP Howto](http://www.postfix.org/LDAP_README.html) for more i
 
 These commands can be executed in the context of the container, for example:
 
-```
+```bash
 docker exec <container> <command>
 ```
 
@@ -502,9 +547,9 @@ If you edit one of postfix's table files, you must run the appropriate helper co
 ## Postfix's Order of Checks/Restrictions
 
 * `postscreen_access_list`:
-  1. `permit_mynetworks` - includes any networks set by the `POSTFIX_MYNETWORKS` environment variable 
+  1. `permit_mynetworks` - includes any networks set by the `POSTFIX_MYNETWORKS` environment variable
   2. `cidr:/etc/postfix/postscreen_access.cidr` - includes any local entries added to `/etc/postfix/tables/postscreen_access.cidr`. If you are using [fail2ban](http://www.fail2ban.org/) or similar, this is the file you can add your banned IPs to.
-  3. If `POSTFIX_DNSBL_SITES` is configured, postscreen performs DNSBL checks. 
+  3. If `POSTFIX_DNSBL_SITES` is configured, postscreen performs DNSBL checks.
 * `smtpd_helo_restrictions`:
   1. `permit_mynetworks` - includes any networks set by the `POSTFIX_MYNETWORKS` environment variable
   2. `check_helo_access hash:/etc/postfix/helo_access.hash` - includes any local entries added to `/etc/postfix/tables/helo_access.hash`
@@ -525,8 +570,8 @@ If you edit one of postfix's table files, you must run the appropriate helper co
   11. If `ENABLE_POSTGREY` is enabled, `check_policy_service inet:127.0.0.1:10023` - performs greylisting.
   12. If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, and/or if `/etc/postfix/tables/recipient_access.hash` exists, `check_recipient_access ...` - performs recipient address verification using LDAP and/or the `recipient_access.hash` file. The `recipient_access.hash` file is analysed first, allowing this file to override LDAP verification.
   13. Finally:
-    * If `check_recipient_access` is used (see above), then: `POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION` (default: `defer`)
-    * Else: `permit`
+      * If `check_recipient_access` is used (see above), then: `POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION` (default: `defer`)
+      * Else: `permit`
 * `smtpd_data_restrictions`:
   1. `reject_unauth_pipelining` - see: <http://www.postfix.org/postconf.5.html#reject_unauth_pipelining>
   2. `permit`
@@ -545,7 +590,7 @@ The script requires `expect` and `telnet`.
 
 The syntax of the file is as follows:
 
-```
+```bash
 test_server.expect <mail_server> <port> <helo> <from> <to>
 ```
 
@@ -563,10 +608,10 @@ An email will be sent from `<from>`, to `<to>` with the subject `Test email sent
 
 When setting this container up, it is recommended to:
 
-* For inbound mail relays, from an __external__ server:
+* For inbound mail relays, from an **external** server:
   * Test normal operation - Test from an external email address, to an internal mail address.
   * Test to ensure no open relay - Test from an internal email address, to an external mail address.
-* For outbound mail relays, from an __internal__ server (as your outbound mail relay should not be accessable outside your LAN):
+* For outbound mail relays, from an **internal** server (as your outbound mail relay should not be accessable outside your LAN):
   * Test normal operation - Test from an internal email address, to an external mail address.
 * For testing SPF/DKIM - there are online tools available, such as <https://email-test.had.dnsops.gov> (remember that this service is rate limited, so don't accidentally get banned by testing too much). Furthermore, you can send an email to a gmail address and then take a look at the headers when (if) the message arrives. Google performs SPF/DKIM/DMARC on all email.
 
