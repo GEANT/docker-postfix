@@ -98,7 +98,7 @@ This container implement's the excellent [s6-overlay](https://github.com/just-co
 
 The documentation includes two diffrerent examples for Nomad and Docker-compose
 
-* [Nomad](./doc/nomad/README.md)
+* [Nomad](./doc/nomad/)
 * [Docker-Compose](./doc/docker-compose/README.md)
 
 ### Wrap a Local Exchange Server

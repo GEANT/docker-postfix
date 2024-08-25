@@ -17,7 +17,7 @@ Part of the keys are split per environment. Each environment name matches a work
 
 ![Mail server Nomad Architecture](../.pics/mailserver_nomad.jpg?raw=true)
 
-Files included in this example
+### Files included in this example
 
 doc  
 └─nomad  
