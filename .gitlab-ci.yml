@@ -7,7 +7,7 @@ build:
   variables:
     GIT_STRATEGY: clone
   script:
-    - docker build --no-cache --build-arg CACHEBUST=$(date +%s) -t postfix:$CI_COMMIT_TAG .
+    - docker build --no-cache --build-arg DOCKER_POSTFIX_VERSION=$CI_COMMIT_TAG --build-arg CACHEBUST=$(date +%s) -t postfix:$CI_COMMIT_TAG .
     - echo $AFACTORY_TOKEN | docker login -u $AFACTORY_USER --password-stdin $AFACTORY_URL
     # Push the image using the same tag as the current commit
     - docker tag postfix:$CI_COMMIT_TAG $AFACTORY_URL/geant-devops-docker/postfix:$CI_COMMIT_TAG

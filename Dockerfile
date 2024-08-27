@@ -241,7 +241,7 @@ RUN set -x && \
     echo "ClamAV $(clamconf --version | tr -s ' ' | cut -d ' ' -f 5)" >> /VERSIONS && \
     echo "postfix-policyd-spf-perl $BRANCH_POSTFIX_POLICYD_SPF_PERL" >> /VERSIONS && \
     echo "postfix $(postconf mail_version | cut -d '=' -f 2 | tr -d ' ')" >> /VERSIONS && \
-    echo "$(git describe --tags --abbrev=0)" >> /CONTAINER_VERSION && \
+    echo $DOCKER_POSTFIX_VERSION > /CONTAINER_VERSION && \
     # fail2ban-client --version >> /VERSIONS && \
     cat /VERSIONS
 
