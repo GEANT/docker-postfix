@@ -142,6 +142,7 @@ From a networking perspective:
 | `ENABLE_OPENDKIM`    | Optional. Set to "true" to enable OpenDKIM. If OpenDKIM is enabled, the "OpenDKIM Configuration" variables below will need to be set. Default is "false". |
 | `ENABLE_POSTGREY`    | Optional. Set to "true" to enable [postgrey](https://postgrey.schweikert.ch). Default is "false". |
 | `ENABLE_SPF`         | Optional. Set to "true" to enable [policyd-spf](https://launchpad.net/postfix-policyd-spf-perl/). Default is "false". |
+| `PREFER_IPV4`        | Optional. Prioritize IPv4. Set to "true" to enable [gai.conf](https://man7.org/linux/man-pages/man5/gai.conf.5.html). Default is false. |
 | `POSTMASTER_EMAIL`   | Required. Set to the email of your domain's postmaster. Example: `postmaster@domain.tld`. |
 | `TZ`                 | Recommended. Set the timezone for the container. Default is `UTC`. |
 
