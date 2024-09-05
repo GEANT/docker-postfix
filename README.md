@@ -175,6 +175,8 @@ From a networking perspective:
 | `ENABLE_SUBMISSION_PORT`           | Enable port 587. See [documentation link](https://www.postfix.org/postconf.5.html#service_name). |
 | `ENABLE_SMTPS_PORT`                | Enable legacy port 465. See [documentation link](https://www.postfix.org/postconf.5.html#service_name). |
 | `POSTFIX_SMTP_TLS_CHAIN_FILES`     | See [documentation link](http://www.postfix.org/postconf.5.html#smtp_tls_chain_files). |
+| `POSTFIX_SMTP_TLS_LOGLEVEL`       | See [documentation link](http://www.postfix.org/postconf.5.html#smtp_tls_loglevel). |
+| `POSTFIX_SMTP_TLS_SECURITY_LEVEL` | See [documentation link](http://www.postfix.org/postconf.5.html#smtp_tls_security_level). |
 | `POSTFIX_SMTPD_MILTERS`            | Any milters given here are applied after DKIM & ClamAV. See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_milters). |
 | `POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_SASL_AUTHENTICATED` | Set to `true` to include `permit_sasl_authenticated` in `smtpd_recipient_restrictions`. See [documentation link](http://www.postfix.org/postconf.5.html#permit_sasl_authenticated). |
 | `POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_MYNETWORK` | Set to `true` to include `permit_mynetwork` in `smtpd_recipient_restrictions`. See [documentation link](https://www.postfix.org/postconf.5.html#permit_mynetworks). |

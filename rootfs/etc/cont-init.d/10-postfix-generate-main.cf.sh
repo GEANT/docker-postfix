@@ -85,6 +85,16 @@ CHECK_RECIPIENT_ACCESS=""
     echo "smtpd_tls_loglevel = ${POSTFIX_SMTPD_TLS_LOGLEVEL}"
   fi
 
+  # http://www.postfix.org/postconf.5.html#smtp_tls_security_level
+  if [ -n "${POSTFIX_SMTP_TLS_SECURITY_LEVEL}" ]; then
+    echo "smtp_tls_security_level = ${POSTFIX_SMTP_TLS_SECURITY_LEVEL}"
+  fi
+
+  # http://www.postfix.org/postconf.5.html#smtp_tls_loglevel
+  if [ -n "${POSTFIX_SMTP_TLS_LOGLEVEL}" ]; then
+    echo "smtp_tls_loglevel = ${POSTFIX_SMTP_TLS_LOGLEVEL}"
+  fi
+
   # http://www.postfix.org/postconf.5.html#smtp_tls_chain_files
   if [ -n "${POSTFIX_SMTP_TLS_CHAIN_FILES}" ]; then
     echo "smtp_tls_chain_files = ${POSTFIX_SMTP_TLS_CHAIN_FILES}"
