@@ -16,6 +16,26 @@ OPENDKIM_CONF_FILE="/etc/opendkim.conf"
         echo "LogWhy true"
     fi
 
+    # SyslogSuccess
+    if [ -n "${OPENDKIM_SYSLOGSUCCESS}" ]; then
+        echo "SyslogSuccess true"
+    fi
+
+    # Diagnostic
+    if [ -n "${OPENDKIM_DIAGNOSTICS}" ]; then
+        echo "Diagnostics true"
+    fi
+
+    # RemoveOldSignatures
+    if [ -n "${OPENDKIM_REMOVEOLDSIGNATURES}" ]; then
+        echo "RemoveOldSignatures true"
+    fi
+
+    # RemoveMilterDebug
+    if [ -n "${OPENDKIM_MILTERDEBUG}" ]; then
+        echo "MilterDebug ${OPENDKIM_MILTERDEBUG}"
+    fi
+
     # Listen on localhost:8891
     echo "Socket inet:8891@127.0.0.1"
 

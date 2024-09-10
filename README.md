@@ -220,8 +220,12 @@ If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, the final `smtpd_recipient_restric
 | `OPENDKIM_INTERNALHOSTS`           | Comma separated list of internal hosts whose mail should be signed rather than verified. |
 | `OPENDKIM_KEYFILE`                 | Gives the location (within the container) of a PEM-formatted private key to be used for signing all messages. |
 | `OPENDKIM_KEYTABLE`                | Path to a key table. You do not need to include `refile:`. Can be used instead of `OPENDKIM_KEYFILE` & `OPENDKIM_SELECTOR` for multiple domains. |
-| `OPENDKIM_LOGRESULTS`              | Set to `true` for for logging of the results of evaluation of all signatures that were at least partly intact. |
+| `OPENDKIM_LOGRESULTS`              | Set to `true` for logging of the results of evaluation of all signatures that were at least partly intact. |
 | `OPENDKIM_LOGWHY`                  | Set to `true` for very detailed logging about the logic behind the filter’s decision to either sign a message or verify it. |
+| `OPENDKIM_SYSLOGSUCCESS`           | Set to `true` for logging additional entries indicating successful signing or verification of messages. |
+| `OPENDKIM_DIAGNOSTICS`             | Set to `true` for requesting the inclusion of "z=" tags in signatures, which encode the original header field set for use by verifiers when diagnosing verification failures. |
+| `OPENDKIM_REMOVEOLDSIGNATURES`     | Set to `true` to remove all existing signatures when operating in signing mode. |
+| `OPENDKIM_MILTERDEBUG`             | Set and INTEGER between 0 and 9 to set the debug level to be requested from the milter library. The default is 0. |
 | `OPENDKIM_MODE`                    | Selects operating modes. The string is a concatenation of characters that indicate which mode(s) of operation are desired. Valid modes are s (signer) and v (verifier). The default is sv except in test mode (see the opendkim(8) man page) in which case the default is v. When signing mode is enabled, one of the following combinations must also be set: (a) Domain, KeyFile, Selector, no KeyTable, no SigningTable; (b) KeyTable, SigningTable, no Domain, no KeyFile, no Selector; (c) KeyTable, SetupPolicyScript, no Domain, no KeyFile, no Selector. |
 | `OPENDKIM_SELECTOR`                | Set to the selector specified when creating the Key File. |
 | `OPENDKIM_SIGNINGTABLE`            | Path to a signing table file. You do not need to include `refile:`. Can be used instead of `OPENDKIM_DOMAIN` for multiple domains. |

@@ -2,6 +2,6 @@
 # shellcheck shell=bash
 
 # Add precedence to IPv4
-if [ -z "${PREFER_IPV4}" ]; then
+if [ -n "${PREFER_IPV4}" ]; then
   echo 'precedence ::ffff:0:0/96 100' >>/etc/gai.conf
 fi
