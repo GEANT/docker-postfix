@@ -1,6 +1,6 @@
 ARG DOCKER_POSTFIX_VERSION="1.0.0"
 
-FROM debian:bullseye-20231218-slim
+FROM debian:bullseye-20240904-slim
 
 ENV CLAMAV_CLAMDCONF_FILE="/usr/local/etc/clamd.conf" \
     CLAMAV_FRESHCLAMCONF_FILE="/usr/local/etc/freshclam.conf" \
