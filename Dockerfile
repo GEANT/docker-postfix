@@ -34,7 +34,7 @@ RUN set -x && \
     TEMP_PACKAGES=() && \
     KEPT_PACKAGES=() && \
     # Packages to keep
-    KEPT_PACKAGES+=(busybox-syslogd) && \
+    KEPT_PACKAGES+=(inetutils-syslogd) && \
     KEPT_PACKAGES+=(bzip2) && \
     KEPT_PACKAGES+=(ca-certificates) && \
     KEPT_PACKAGES+=(curl) && \
@@ -235,7 +235,7 @@ RUN set -x && \
     apt-get remove -y ${TEMP_PACKAGES[@]} && \
     apt-get autoremove -y && \
     apt-get clean -y && \
-    rm -rf /src /tmp/* /var/lib/apt/lists/* && \
+    rm -rf /src /tmp/* /var/lib/apt/lists/* /etc/*/inetutils-syslogd && \
     find /var/log -type f -iname "*log" -exec truncate --size 0 {} \; && \
     # Document versions
     opendkim -V | grep OpenDKIM | sed "s/OpenDKIM Filter //g" >> /VERSIONS && \
