@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+
+VIRTUAL_ALIASES_FILE="/etc/postfix/virtual"
+VIRTUAL_ALIASES_FILE_LOCAL="/etc/postfix/tables/virtual"
+
+if [ -f "${VIRTUAL_ALIASES_FILE_LOCAL}" ]; then
+    cat "${VIRTUAL_ALIASES_FILE_LOCAL}" > "${VIRTUAL_ALIASES_FILE}"
+    postmap "${VIRTUAL_ALIASES_FILE}"
+fi

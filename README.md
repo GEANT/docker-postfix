@@ -287,6 +287,14 @@ The format of this file is as-per the [`/etc/aliases`](https://linux.die.net/man
 
 The system aliases file maps `postmaster`, `root`, `postfix` and `clamav` through to the address specified by `POSTMASTER_EMAIL`.
 
+### Virtual Aliases
+
+The format of this file is as-per the [`/etc/postfix/virtual`](https://www.postfix.org/VIRTUAL_README.html#virtual_alias) file.
+
+| Configuration file (with respect to container) | If this file is present... | After modifying... |
+|-----|-----|-----|
+| `/etc/postfix/tables/virtual` | It is created with the defined content. | Run helper command `postconf` (see below). |
+
 ## Paths
 
 ### Required to be mapped

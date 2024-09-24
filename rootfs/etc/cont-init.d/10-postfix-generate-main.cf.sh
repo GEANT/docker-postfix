@@ -20,6 +20,11 @@ CHECK_RECIPIENT_ACCESS=""
   # http://www.postfix.org/postconf.5.html#alias_maps
   echo "alias_maps = hash:/etc/aliases"
 
+  # https://www.postfix.org/postconf.5.html#virtual_alias_maps
+  if [ -f "/etc/postfix/tables/virtual" ]; then
+    echo "virtual_alias_maps = hash:/etc/postfix/virtual"
+  fi
+
   # http://www.postfix.org/SMTPUTF8_README.html
   if [ "${POSTFIX_SMTPUTF8_ENABLE}" = "true" ]; then
     echo "smtputf8_enable = yes"
