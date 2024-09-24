@@ -5,18 +5,18 @@ SENDER_ACCESS_HASH_FILE="/etc/postfix/sender_access.hash"
 SENDER_ACCESS_HASH_FILE_LOCAL="/etc/postfix/tables/sender_access.hash"
 
 # Remove existing sender_access.hash
-rm "${SENDER_ACCESS_HASH_FILE}" > /dev/null 2>&1
+rm "${SENDER_ACCESS_HASH_FILE}" >/dev/null 2>&1
 touch "${SENDER_ACCESS_HASH_FILE}"
 
 {
-  # Import local entries into sender_access.hash
-  if [ -f "${SENDER_ACCESS_HASH_FILE_LOCAL}" ]; then
-    echo ""
-    echo "## Entries from ${SENDER_ACCESS_HASH_FILE_LOCAL}"
-    cat "${SENDER_ACCESS_HASH_FILE_LOCAL}"
-    echo ""
-  fi
-} > "${SENDER_ACCESS_HASH_FILE}"
+    # Import local entries into sender_access.hash
+    if [ -f "${SENDER_ACCESS_HASH_FILE_LOCAL}" ]; then
+        echo ""
+        echo "## Entries from ${SENDER_ACCESS_HASH_FILE_LOCAL}"
+        cat "${SENDER_ACCESS_HASH_FILE_LOCAL}"
+        echo ""
+    fi
+} >"${SENDER_ACCESS_HASH_FILE}"
 
 # Run postmap
 postmap "${SENDER_ACCESS_HASH_FILE}"

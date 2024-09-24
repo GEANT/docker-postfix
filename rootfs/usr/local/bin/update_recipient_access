@@ -9,14 +9,14 @@ rm "${RECIPIENT_ACCESS_HASH_FILE}" > /dev/null 2>&1
 touch "${RECIPIENT_ACCESS_HASH_FILE}"
 
 {
-  # Import local entries into client_access.cidr
-  if [ -f "${RECIPIENT_ACCESS_HASH_FILE_LOCAL}" ]; then
-    echo ""
-    echo "## Entries from ${RECIPIENT_ACCESS_HASH_FILE_LOCAL}"
-    cat "${RECIPIENT_ACCESS_HASH_FILE_LOCAL}"
-    echo ""
-  fi
-} > "${RECIPIENT_ACCESS_HASH_FILE}"
+    # Import local entries into client_access.cidr
+    if [ -f "${RECIPIENT_ACCESS_HASH_FILE_LOCAL}" ]; then
+        echo ""
+        echo "## Entries from ${RECIPIENT_ACCESS_HASH_FILE_LOCAL}"
+        cat "${RECIPIENT_ACCESS_HASH_FILE_LOCAL}"
+        echo ""
+    fi
+} >"${RECIPIENT_ACCESS_HASH_FILE}"
 
 # Run postmap
 postmap "${RECIPIENT_ACCESS_HASH_FILE}"

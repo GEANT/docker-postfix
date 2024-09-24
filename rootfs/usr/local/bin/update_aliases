@@ -2,17 +2,17 @@
 # shellcheck shell=bash
 
 {
-  # Write /etc/aliases
-  echo "postmaster: ${POSTMASTER_EMAIL}"
-  echo "root:       ${POSTMASTER_EMAIL}"
-  echo "postfix:    ${POSTMASTER_EMAIL}"
-  echo "clamav:     ${POSTMASTER_EMAIL}"
+    # Write /etc/aliases
+    echo "postmaster: ${POSTMASTER_EMAIL}"
+    echo "root:       ${POSTMASTER_EMAIL}"
+    echo "postfix:    ${POSTMASTER_EMAIL}"
+    echo "clamav:     ${POSTMASTER_EMAIL}"
 
-  # Implement local aliases
-  if [ -f "/etc/postfix/local_aliases/aliases" ]; then
-    cat /etc/postfix/local_aliases/aliases
-  fi
-} > /etc/aliases
+    # Implement local aliases
+    if [ -f "/etc/postfix/local_aliases/aliases" ]; then
+        cat /etc/postfix/local_aliases/aliases
+    fi
+} >/etc/aliases
 
 # Run newaliases
 newaliases

@@ -5,24 +5,24 @@ DNSBL_REPLY_TEXTHASH_FILE="/etc/postfix/dnsbl_reply.texthash"
 DNSBL_REPLY_TEXTHASH_FILE_LOCAL="/etc/postfix/tables/dnsbl_reply.texthash"
 
 # Remove existing dnsbl_reply.texthash
-rm "${DNSBL_REPLY_TEXTHASH_FILE}" > /dev/null 2>&1
+rm "${DNSBL_REPLY_TEXTHASH_FILE}" >/dev/null 2>&1
 touch "${DNSBL_REPLY_TEXTHASH_FILE}"
 
 # TODO: add fail2ban file
 
 {
-  # Import local entries into dnsbl_reply.texthash
-  if [ -f "${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}" ]; then
-    echo ""
-    echo "## Entries from ${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}"
-    cat "${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}"
-    echo ""
-  fi
-} > "${DNSBL_REPLY_TEXTHASH_FILE}"
+    # Import local entries into dnsbl_reply.texthash
+    if [ -f "${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}" ]; then
+        echo ""
+        echo "## Entries from ${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}"
+        cat "${DNSBL_REPLY_TEXTHASH_FILE_LOCAL}"
+        echo ""
+    fi
+} >"${DNSBL_REPLY_TEXTHASH_FILE}"
 
 # Don't need to run postmap over texthash files
 
 # If postfix is running, update
-if postfix status > /dev/null 2>&1; then
-  postfix reload
+if postfix status >/dev/null 2>&1; then
+    postfix reload
 fi

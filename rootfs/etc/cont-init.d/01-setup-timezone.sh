@@ -3,7 +3,7 @@
 
 # Set up timezone
 if [ -z "${TZ}" ]; then
-  echo "WARNING: TZ environment variable not set"
+    echo "WARNING: TZ environment variable not set"
 else
-  ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" >/etc/timezone
+    ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" >/etc/timezone
 fi
