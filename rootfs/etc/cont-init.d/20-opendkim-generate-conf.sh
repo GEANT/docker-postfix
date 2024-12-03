@@ -26,6 +26,11 @@ OPENDKIM_CONF_FILE="/etc/opendkim.conf"
         echo "Diagnostics true"
     fi
 
+    # Add SenderHeaders to sign lists
+    if [ -n "${OPENDKIM_SENDER_HEADERS}" ]; then
+        echo "SenderHeaders ${OPENDKIM_SENDER_HEADERS}"
+    fi
+
     # RemoveOldSignatures
     if [ -n "${OPENDKIM_REMOVEOLDSIGNATURES}" ]; then
         echo "RemoveOldSignatures true"
