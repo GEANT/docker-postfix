@@ -194,6 +194,7 @@ RUN set -x && \
       CCARGS="-DUSE_TLS \
               -DHAS_PCRE $(pcre-config --cflags) \
               -DHAS_LDAP \
+              -DUSE_SASL_AUTH \
               -I/usr/include/sasl \
               -DUSE_LDAP_SASL \
               " \
