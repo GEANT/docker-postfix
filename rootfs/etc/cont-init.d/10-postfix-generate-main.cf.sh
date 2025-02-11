@@ -158,7 +158,7 @@ CHECK_RECIPIENT_ACCESS=""
     echo "smtpd_recipient_restrictions = "
     echo "    check_client_access cidr:/etc/postfix/client_access.cidr,"
 
-    if [ "${POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_SASL_AUTHENTICATED}" = "true" ]; then
+    if [ "${POSTFIX_SMTPD_RECIPIENT_RESTRICTIONS_PERMIT_POSTFIX_SASL_AUTHENTICATED}" = "true" ]; then
         echo "    permit_sasl_authenticated,"
     fi
 
@@ -223,6 +223,25 @@ CHECK_RECIPIENT_ACCESS=""
     fi
 
     # ========== END smtpd_recipient_restrictions ==========
+
+    # ========== START smtpd_sender_restrictions ==========
+    if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
+        echo "smtpd_sasl_auth_enable = yes"
+        echo "smtpd_sasl_type = dovecot"
+        echo "smtpd_sasl_path = private/auth"
+        echo "smtpd_sasl_security_options = noanonymous"
+        echo "broken_sasl_auth_clients = yes"
+        echo "smtpd_sender_restrictions ="
+        echo "    permit_sasl_authenticated,"
+        echo "    check_sender_access hash:/etc/postfix/auth_sender_access.hash,"
+        echo "    permit_mynetworks,"
+        echo "    check_sender_access regexp:/etc/postfix/sender_access.hash,"
+        echo "    reject_unauth_destination,"
+        echo "    reject_non_fqdn_sender,"
+        echo "    reject_unknown_sender_domain,"
+        echo "    permit"
+    fi
+    # ========== END smtpd_sender_restrictions ==========
 
     # ========== START smtpd_data_restrictions ==========
 

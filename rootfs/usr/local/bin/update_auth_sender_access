@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+
+AUTH_SENDER_ACCESS_HASH_FILE="/etc/postfix/auth_sender_access.hash"
+AUTH_SENDER_ACCESS_HASH_FILE_LOCAL="/etc/postfix/tables/auth_sender_access.hash"
+
+# Empty existing auth_sender_access.hash
+truncate -s 0 "${AUTH_SENDER_ACCESS_HASH_FILE}"
+
+{
+    # Import local entries into auth_sender_access.hash
+    if [ -f "${AUTH_SENDER_ACCESS_HASH_FILE_LOCAL}" ]; then
+        echo ""
+        echo "## Entries from ${AUTH_SENDER_ACCESS_HASH_FILE_LOCAL}"
+        cat "${AUTH_SENDER_ACCESS_HASH_FILE_LOCAL}"
+        echo ""
+    fi
+} >"${AUTH_SENDER_ACCESS_HASH_FILE}"
+
+# Run postmap
+postmap "${AUTH_SENDER_ACCESS_HASH_FILE}"

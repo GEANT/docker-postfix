@@ -5,8 +5,7 @@ CLIENT_ACCESS_CIDR_FILE="/etc/postfix/client_access.cidr"
 CLIENT_ACCESS_CIDR_FILE_LOCAL="/etc/postfix/tables/client_access.cidr"
 
 # Remove existing client_access.cidr
-rm "${CLIENT_ACCESS_CIDR_FILE}" > /dev/null 2>&1
-touch "${CLIENT_ACCESS_CIDR_FILE}"
+truncate -s 0 "${CLIENT_ACCESS_CIDR_FILE}"
 
 {
     # Import local entries into client_access.cidr

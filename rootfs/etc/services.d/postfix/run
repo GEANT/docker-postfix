@@ -21,6 +21,12 @@ if [ "${ENABLE_POSTGREY}" = "true" ]; then
     s6-svwait -U /run/s6/services/postgrey
 fi
 
+# Wait for Dovecot
+if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
+    echo "[postfix] Waiting for dovecot..."
+    s6-svwait -U /run/s6/services/dovecot
+fi
+
 # Wait for syslog
 echo "[postfix] Waiting for syslog..."
 s6-svwait -U /run/s6/services/syslogd

@@ -5,8 +5,7 @@ MILTER_HEADER_CHECKS_PCRE_FILE="/etc/postfix/milter_header_checks.pcre"
 MILTER_HEADER_CHECKS_PCRE_FILE_LOCAL="/etc/postfix/tables/milter_header_checks.pcre"
 
 # Remove existing client_access.cidr
-rm "${MILTER_HEADER_CHECKS_PCRE_FILE}" >/dev/null 2>&1
-touch "${MILTER_HEADER_CHECKS_PCRE_FILE}"
+truncate -s 0 "${MILTER_HEADER_CHECKS_PCRE_FILE}"
 
 {
     # Import local entries into client_access.cidr

@@ -38,6 +38,7 @@ RUN set -x && \
     KEPT_PACKAGES+=(bzip2) && \
     KEPT_PACKAGES+=(ca-certificates) && \
     KEPT_PACKAGES+=(curl) && \
+    KEPT_PACKAGES+=(dovecot-core) && \
     KEPT_PACKAGES+=(gnupg2) && \
     KEPT_PACKAGES+=(libberkeleydb-perl) && \
     KEPT_PACKAGES+=(libicu-dev) && \

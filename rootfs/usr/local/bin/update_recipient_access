@@ -5,8 +5,7 @@ RECIPIENT_ACCESS_HASH_FILE="/etc/postfix/recipient_access.hash"
 RECIPIENT_ACCESS_HASH_FILE_LOCAL="/etc/postfix/tables/recipient_access.hash"
 
 # Remove existing client_access.cidr
-rm "${RECIPIENT_ACCESS_HASH_FILE}" > /dev/null 2>&1
-touch "${RECIPIENT_ACCESS_HASH_FILE}"
+truncate -s 0 "${RECIPIENT_ACCESS_HASH_FILE}"
 
 {
     # Import local entries into client_access.cidr

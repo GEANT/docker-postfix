@@ -5,8 +5,7 @@ HEADER_CHECKS_PCRE_FILE="/etc/postfix/header_checks.pcre"
 HEADER_CHECKS_PCRE_FILE_LOCAL="/etc/postfix/tables/header_checks.pcre"
 
 # Remove existing client_access.cidr
-rm "${HEADER_CHECKS_PCRE_FILE}" >/dev/null 2>&1
-touch "${HEADER_CHECKS_PCRE_FILE}"
+truncate -s 0 "${HEADER_CHECKS_PCRE_FILE}"
 
 {
     # Import local entries into client_access.cidr

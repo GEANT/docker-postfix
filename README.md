@@ -188,6 +188,7 @@ From a networking perspective:
 | `POSTFIX_SMTPD_TLS_SECURITY_LEVEL` | See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_tls_security_level). |
 | `POSTFIX_SMTPD_USE_TLS`            | See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_use_tls). |
 | `POSTFIX_SMTPUTF8_ENABLE`          | See [documentation link](http://www.postfix.org/SMTPUTF8_README.html). |
+| `POSTFIX_SASL_AUTH`                | We use Dovecot. See [documentation link](https://www.postfix.org/SASL_README.html#server_dovecot). |
 | `POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION` | If recipient checks are enabled (via `ENABLE_LDAP_RECIPIENT_ACCESS` and/or `recipient_access.hash`), this is the final action taken after all other checks. Default is `defer`. Usually should be set to either `defer` or `reject`. See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_recipient_restrictions).|
 
 #### Backwards-Compatibility Safety Net Options
@@ -376,6 +377,40 @@ If setting this up for the first time:
 * If there are accidental referrals, or you have addresses that email should be accepted for that are not in your directory, you can add these to the `recipient_access.hash` file (see above). The next time the message delivery is attempted (because we are deferring, not rejecting), it should deliver properly.
 
 See the [Postfix LDAP Howto](http://www.postfix.org/LDAP_README.html) for more information.
+
+## SASL Auth login
+
+SASL Auth login enables file based authentication using the SHA512-CRYPT alghorytm.
+
+To configure SASL authentication and add the user `robin@gotham-city.org` you first need to set the container environment variable `POSTFIX_SASL_AUTH` to `true` and then configure the followings
+
+### user DB
+
+A file called `/secrets/passwd` (where `/secrets/` is the default path for Nomad secrets) with one line per user as follows:
+
+```txt
+robin@gotham-city.org:{SHA512-CRYPT}$6$HnChlH0QsIqLs55m$sIigoiOLaNBowtHNW7gam/CGRwYPSpna9vG9BCQpUMDmRHN94va0aLB44cFLlH/fwQTXVkYsxCcw.QheOfoIb1
+```
+
+The passwords can be generated from inside the container, running this command:
+
+```bash
+doveadm pw -s SHA512-CRYPT
+```
+
+### auth_sender_access table file
+
+This postfix table file has the same syntax as check_sender_access file.
+
+| Table File (with respect to container) | Format | If this file is present... | After modifying... |
+|-----|-----|-----|-----|
+| `/etc/postfix/tables/auth_sender_access.hash` | [hash](http://www.postfix.org/DATABASE_README.html#types) | It is automatically added to postfix's [`check_sender_access`](http://www.postfix.org/postconf.5.html#check_sender_access). | Run helper command `update_sender_access` (see below) |
+
+and create `/etc/postfix/tables/auth_sender_access.hash` with this content
+
+```txt
+robin@gotham-city.org REJECT
+```
 
 ## Helper Commands
 

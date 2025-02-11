@@ -5,8 +5,7 @@ HELO_ACCESS_HASH_FILE="/etc/postfix/helo_access.hash"
 HELO_ACCESS_HASH_FILE_LOCAL="/etc/postfix/tables/helo_access.hash"
 
 # Remove existing helo_access.hash
-rm "${HELO_ACCESS_HASH_FILE}" > /dev/null 2>&1
-touch "${HELO_ACCESS_HASH_FILE}"
+truncate -s 0 "${HELO_ACCESS_HASH_FILE}"
 
 {
     # Import local entries into helo_access.hash

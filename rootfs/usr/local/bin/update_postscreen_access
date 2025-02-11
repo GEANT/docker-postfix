@@ -5,8 +5,7 @@ POSTSCREEN_ACCESS_CIDR_FILE="/etc/postfix/postscreen_access.cidr"
 POSTSCREEN_ACCESS_CIDR_FILE_LOCAL="/etc/postfix/tables/postscreen_access.cidr"
 
 # Remove existing client_access.cidr
-rm "${POSTSCREEN_ACCESS_CIDR_FILE}" >/dev/null 2>&1
-touch "${POSTSCREEN_ACCESS_CIDR_FILE}"
+truncate -s 0 "${POSTSCREEN_ACCESS_CIDR_FILE}"
 
 # TODO: add fail2ban file
 {

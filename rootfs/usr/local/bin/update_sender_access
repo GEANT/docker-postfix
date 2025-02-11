@@ -4,9 +4,8 @@
 SENDER_ACCESS_HASH_FILE="/etc/postfix/sender_access.hash"
 SENDER_ACCESS_HASH_FILE_LOCAL="/etc/postfix/tables/sender_access.hash"
 
-# Remove existing sender_access.hash
-rm "${SENDER_ACCESS_HASH_FILE}" >/dev/null 2>&1
-touch "${SENDER_ACCESS_HASH_FILE}"
+# Empty existing auth_sender_access.hash
+truncate -s 0 "${SENDER_ACCESS_HASH_FILE}"
 
 {
     # Import local entries into sender_access.hash
