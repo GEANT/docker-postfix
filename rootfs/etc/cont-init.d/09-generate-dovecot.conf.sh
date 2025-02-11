@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
-DOVECOT_CONF="/etc/dovecont/dovecot.conf"
+DOVECOT_CONF="/etc/dovecot/dovecot.conf"
 DOVECOT_DEBUG_CONF="/etc/dovecot/debug.conf"
 
 if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
@@ -11,7 +11,6 @@ if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
         echo "!include_try debug.conf"
         echo ""
         echo "# Auth configuration"
-        echo "# passwords are created through this command: doveadm pw -s SHA512-CRYPT"
         echo "disable_plaintext_auth = no"
         echo "auth_mechanisms = plain login"
         echo "passdb {"

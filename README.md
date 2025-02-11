@@ -189,6 +189,7 @@ From a networking perspective:
 | `POSTFIX_SMTPD_USE_TLS`            | See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_use_tls). |
 | `POSTFIX_SMTPUTF8_ENABLE`          | See [documentation link](http://www.postfix.org/SMTPUTF8_README.html). |
 | `POSTFIX_SASL_AUTH`                | We use Dovecot. See [documentation link](https://www.postfix.org/SASL_README.html#server_dovecot). |
+| `POSTFIX_SASL_AUTH_DEBUG`          | Enable debug logging for Dovecot. |
 | `POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION` | If recipient checks are enabled (via `ENABLE_LDAP_RECIPIENT_ACCESS` and/or `recipient_access.hash`), this is the final action taken after all other checks. Default is `defer`. Usually should be set to either `defer` or `reject`. See [documentation link](http://www.postfix.org/postconf.5.html#smtpd_recipient_restrictions).|
 
 #### Backwards-Compatibility Safety Net Options
