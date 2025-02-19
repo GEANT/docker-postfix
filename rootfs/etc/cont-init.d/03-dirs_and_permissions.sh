@@ -3,24 +3,16 @@
 
 # Make log dirs
 # Create log dir for piaware
-mkdir -p /var/log/clamav-milter
-chown nobody:nogroup /var/log/clamav-milter
-mkdir -p /var/log/clamd
-chown nobody:nogroup /var/log/clamd
-mkdir -p /var/log/freshclam
-chown nobody:nogroup /var/log/freshclam
-mkdir -p /var/log/opendkim
-chown nobody:nogroup /var/log/opendkim
-mkdir -p /var/log/postfix
-chown nobody:nogroup /var/log/postfix
-mkdir -p /var/log/postgrey
-chown nobody:nogroup /var/log/postgrey
-mkdir -p /var/log/postgrey_whitelist_update
-chown nobody:nogroup /var/log/postgrey_whitelist_update
-mkdir -p /var/log/syslogd
-chown nobody:nogroup /var/log/syslogd
-mkdir -p /var/log/dovecot
-chown nobody:nogroup /var/log/dovecot
+install -o nobody -g nogroup -m 0755 -d \
+    /var/log/clamav-milter \
+    /var/log/clamd \
+    /var/log/freshclam \
+    /var/log/opendkim \
+    /var/log/postfix \
+    /var/log/postgrey \
+    /var/log/postgrey_whitelist_update \
+    /var/log/syslogd \
+    /var/log/dovecot
 
 # ClamAV
 mkdir -p /var/lib/clamav
