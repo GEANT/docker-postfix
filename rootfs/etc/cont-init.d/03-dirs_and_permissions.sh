@@ -19,6 +19,8 @@ mkdir -p /var/log/postgrey_whitelist_update
 chown nobody:nogroup /var/log/postgrey_whitelist_update
 mkdir -p /var/log/syslogd
 chown nobody:nogroup /var/log/syslogd
+mkdir -p /var/log/dovecot
+chown nobody:nogroup /var/log/dovecot
 
 # ClamAV
 mkdir -p /var/lib/clamav
@@ -56,8 +58,7 @@ chown -R root:root /var/spool/postfix/pid
 mkdir -p /var/spool/postfix/private
 chown -R postfix /var/spool/postfix/private
 mkdir -p /var/spool/postfix/public
-chown -R postfix /var/spool/postfix/public
-chgrp postdrop /var/spool/postfix/public
+chown -R postfix:postdrop /var/spool/postfix/public
 mkdir -p /var/spool/postfix/saved
 chown -R postfix /var/spool/postfix/saved
 mkdir -p /var/spool/postfix/trace
