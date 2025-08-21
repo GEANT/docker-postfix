@@ -10,15 +10,20 @@ cp -v ${POSTFIX_MASTERCF_ORIGINAL_FILE} ${POSTFIX_MASTERCF_FILE}
 # Enable postscreen
 # See: http://www.postfix.org/POSTSCREEN_README.html
 # Comment out the "smtp inet ... smtpd" service in master.cf
-sed -i 's/^smtp *inet.*smtpd$/#&/' /etc/postfix/master.cf
+sed -i 's/^smtp *inet.*smtpd$/#&/' $POSTFIX_MASTERCF_FILE
 # Uncomment the new "smtpd pass ... smtpd" service in master.cf
-sed -i '/^#smtpd *pass.*smtpd$/s/^#//g' /etc/postfix/master.cf
+sed -i '/^#smtpd *pass.*smtpd$/s/^#//g'  $POSTFIX_MASTERCF_FILE
 # Uncomment the new "smtp inet ... postscreen" service in master.cf
-sed -i '/^#smtp *inet.*postscreen$/s/^#//g' /etc/postfix/master.cf
+sed -i '/^#smtp *inet.*postscreen$/s/^#//g' $POSTFIX_MASTERCF_FILE
 # Uncomment the new "tlsproxy unix ... tlsproxy" service in master.cf
-sed -i '/^#tlsproxy *unix.*tlsproxy$/s/^#//g' /etc/postfix/master.cf
+sed -i '/^#tlsproxy *unix.*tlsproxy$/s/^#//g' $POSTFIX_MASTERCF_FILE
 # Uncomment the new "dnsblog unix ... dnsblog" service in master.cf
-sed -i '/^#dnsblog *unix.*dnsblog$/s/^#//g' /etc/postfix/master.cf
+sed -i '/^#dnsblog *unix.*dnsblog$/s/^#//g' $POSTFIX_MASTERCF_FILE
+
+# Do we enable HAProxy protocol?
+if [ "${ENABLE_HAPROXY_PROTOCOL}" = "true" ]; then
+    sed -i '/^smtpd *pass.*smtpd$/s/$/ -o smtpd_upstream_proxy_protocol=haproxy/g' $POSTFIX_MASTERCF_FILE
+fi
 
 # Do we enable & configure spf-engine?
 if [ "${ENABLE_SPF}" = "true" ]; then
@@ -30,9 +35,15 @@ fi
 # "submission" and "submissions" either in /etc/postfix/master.cf and in /etc/services
 # Do we enable & configure submission port?
 if [ "${ENABLE_SUBMISSION_PORT}" = "true" ]; then
-    sed -i '/^#submission *inet.*smtpd$/s/^#//g' /etc/postfix/master.cf
+    sed -i '/^#submission *inet.*smtpd$/s/^#//g' $POSTFIX_MASTERCF_FILE
+    if [ "${ENABLE_HAPROXY_PROTOCOL}" = "true" ]; then
+        sed -i '/^submission *inet.*smtpd$/s/$/ -o smtpd_upstream_proxy_protocol=haproxy/g' $POSTFIX_MASTERCF_FILE
+    fi
 fi
 # Do we enable & configure smtps port?
 if [ "${ENABLE_SMTPS_PORT}" = "true" ]; then
-    sed -i '/^#submissions *inet.*smtpd$/s/^#//g' /etc/postfix/master.cf
+    sed -i '/^#submissions *inet.*smtpd$/s/^#//g'  $POSTFIX_MASTERCF_FILE
+    if [ "${ENABLE_HAPROXY_PROTOCOL}" = "true" ]; then
+        sed -i '/^submissions *inet.*smtpd$/s/$/ -o smtpd_upstream_proxy_protocol=haproxy/g' $POSTFIX_MASTERCF_FILE
+    fi
 fi
