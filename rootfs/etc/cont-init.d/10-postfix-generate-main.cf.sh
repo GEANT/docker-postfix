@@ -259,7 +259,7 @@ CHECK_RECIPIENT_ACCESS=""
     # Do we enable & configure DKIM?
     if [ "${ENABLE_OPENDKIM}" = "true" ]; then
         echo "milter_default_action = accept"
-        echo "milter_protocol = 2"
+        echo "milter_protocol = 6"
         echo "non_smtpd_milters = inet:localhost:8891"
 
         if [ "$SMTPDMILTERS" = "" ]; then

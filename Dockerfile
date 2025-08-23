@@ -1,6 +1,6 @@
 ARG DOCKER_POSTFIX_VERSION="1.0.0"
 
-FROM debian:bullseye-20231218-slim
+FROM debian:bullseye-20250811-slim
 
 ENV ENABLE_OPENDKIM="false" \
     POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION="defer" \
@@ -154,12 +154,13 @@ RUN set -x && \
               -DUSE_SASL_AUTH \
               -I/usr/include/sasl \
               -DUSE_LDAP_SASL \
-              " \
+              -DUSE_MILTER \
+              -I/usr/include/libmilter" \
       AUXLIBS="-lssl -lcrypto -lsasl2" \
       AUXLIBS_PCRE="$(pcre-config --libs)" \
       AUXLIBS_LDAP="-lldap -llber" \
-      && \
-    make && \
+      AUXLIBS_MILTER="-lmilter" && \
+      make && \
     # Install postfix
     POSTFIX_INSTALL_OPTS="" && \
     POSTFIX_INSTALL_OPTS="${POSTFIX_INSTALL_OPTS} -non-interactive" && \

@@ -465,7 +465,7 @@ If you edit one of postfix's table files, you must run the appropriate helper co
 After a message is queued, it is passed through milters:
 
 1. If `ENABLE_DKIM`, the email is sent through `opendkim`. The email is signed/verified by DKIM.
-3. If any additional milters are defined with `POSTFIX_SMTPD_MILTERS`, they are then applied.
+2. If any additional milters are defined with `POSTFIX_SMTPD_MILTERS`, they are then applied.
 
 ## Testing
 
