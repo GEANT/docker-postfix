@@ -241,6 +241,7 @@ If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, the final `smtpd_recipient_restric
 |------------------------------------|-------------------------------------------------------------------------|
 | `FRESHCLAM_CHECKS_PER_DAY`         | Optional. Number of database checks per day. Default: `12` (every two hours). |
 | `FRESHCLAM_DB_MIRROR`              | Optional. The hostname to fetch ClamAV updates from. Default: `database.clamav.net`. |
+| `CLAMAV_MILTER_HOSTNAME`           | Optional. The hostname of ClamAV Milter. Default: `localhost`. |
 | `CLAMAV_MILTER_REPORT_HOSTNAME`    | Optional. The hostname ClamAV Milter will report in the `X-Virus-Scanned` header. If unset, defaults to the container's hostname. |
 | `CLAMAV_MILTER_ALLOWLIST` | Optional. Sets ClamAV Milter's [`Whitelist`](https://linux.die.net/man/5/clamav-milter.conf) option. |
 | `CLAMAV_CLAMD_PHISHING_SIGNATURES`       | Optional. Overrides ClamAV Daemon's default setting for [`PhishingSignatures`](https://linux.die.net/man/5/clamd.conf). |
@@ -479,7 +480,7 @@ If you edit one of postfix's table files, you must run the appropriate helper co
 After a message is queued, it is passed through milters:
 
 1. If `ENABLE_DKIM`, the email is sent through `opendkim`. The email is signed/verified by DKIM.
-2. If `ENABLE_CLAMAV`, the email is sent through `clamav-milter`. The email is dropped if a virus is detected.
+2. If `ENABLE_CLAMAV`, the email is sent through `clamav-milter`. The email is dropped if a virus is detected. If `CLAMAV_MILTER_HOSTNAME` is not `localhost` ClamAV willl not be compiled.
 3. If any additional milters are defined with `POSTFIX_SMTPD_MILTERS`, they are then applied.
 
 ## Testing
