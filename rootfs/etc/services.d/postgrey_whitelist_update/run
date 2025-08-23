@@ -2,7 +2,7 @@
 # shellcheck shell=bash
 set -eo pipefail
 
-# Do we run freshclam?
+# Do we enable postgrey?
 if [ "${ENABLE_POSTGREY}" = "true" ]; then
 
     # Run daily

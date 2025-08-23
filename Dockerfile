@@ -2,15 +2,7 @@ ARG DOCKER_POSTFIX_VERSION="1.0.0"
 
 FROM debian:bullseye-20231218-slim
 
-ENV CLAMAV_CLAMDCONF_FILE="/usr/local/etc/clamd.conf" \
-    CLAMAV_FRESHCLAMCONF_FILE="/usr/local/etc/freshclam.conf" \
-    #CLAMAV_LATEST_STABLE_SOURCE_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /tar.gz$/) && \
-    #CLAMAV_LATEST_STABLE_SOURCE_SIG_URL=$(curl -s https://api.github.com/repos/Cisco-Talos/clamav/releases/latest | jq -rM '.assets | .[] | .browser_download_url' | awk /tar.gz.sig$/) && \
-    CLAMAV_LATEST_STABLE_SOURCE_URL="https://www.clamav.net/downloads/production/clamav-1.4.0.tar.gz" \
-    CLAMAV_LATEST_STABLE_SOURCE_SIG_URL="https://www.clamav.net/downloads/production/clamav-1.4.0.tar.gz.sig" \
-    CLAMAV_GPG_URL="https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg" \
-    CLAMAV_MILTERCONF_FILE="/usr/local/etc/clamav-milter.conf" \
-    ENABLE_OPENDKIM="false" \
+ENV ENABLE_OPENDKIM="false" \
     POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION="defer" \
     POSTFIX_REJECT_INVALID_HELO_HOSTNAME="true" \
     POSTFIX_REJECT_NON_FQDN_HELO_HOSTNAME="true" \
@@ -100,7 +92,6 @@ RUN set -x && \
     # Create groups & users & dirs
     mkdir -p /etc/mail/dkim && \
     groupadd --system postdrop && \
-    groupadd --system clamav && \
     groupadd --system postgrey && \
     useradd \
         --groups postdrop \
@@ -109,14 +100,6 @@ RUN set -x && \
         --system \
         --shell=/usr/sbin/nologin \
         postfix \
-        && \
-    useradd \
-        --groups clamav \
-        --no-create-home \
-        --no-user-group \
-        --system \
-        --shell=/usr/sbin/nologin \
-        clamav \
         && \
     useradd \
         --groups postgrey \
@@ -138,33 +121,6 @@ RUN set -x && \
     touch /etc/postgrey/postgrey_whitelist_recipients.local && \
     ln -s /opt/postgrey/postgrey /usr/local/bin/postgrey && \
     mkdir -p /var/spool/postfix/postgrey && \
-    popd && \
-    # Install rust
-    curl --location --output /src/rustup.sh https://sh.rustup.rs && \
-    chmod a+x /src/rustup.sh && \
-    /src/rustup.sh -y && \
-    source "$HOME/.cargo/env" && \
-    # Install clamav
-    mkdir -p /src/clamav && \
-    curl --location --output /src/clamav.tar.gz "${CLAMAV_LATEST_STABLE_SOURCE_URL}" && \
-    curl --location --output /src/clamav.tar.gz.sig "${CLAMAV_LATEST_STABLE_SOURCE_SIG_URL}" && \
-    curl --location --output /tmp/talos.gpg "$CLAMAV_GPG_URL" && \
-    gpg2 --import /tmp/talos.gpg && \
-    gpg2 --verify /src/clamav.tar.gz.sig /src/clamav.tar.gz || exit 1 && \
-    tar xf /src/clamav.tar.gz -C /src/clamav && \
-    pushd "$(find /src/clamav -maxdepth 1 -type d | tail -1)" && \
-    mkdir -p ./build && \
-    pushd ./build && \
-    cmake .. && \
-    cmake --build . && \
-    # ctest && \  # This works, but takes a long time
-    cmake --build . --target install && \
-    ldconfig && \
-    mkdir -p /var/lib/clamav && \
-    mkdir -p /run/freshclam && \
-    mkdir -p /run/clamav-milter && \
-    mkdir -p /run/clamd && \
-    popd && \
     popd && \
     # Get postfix-policyd-spf-perl
     mkdir -p /src/postfix-policyd-spf-perl && \
@@ -233,7 +189,6 @@ RUN set -x && \
     chmod a+x /src/deploy-s6-overlay.sh && \
     /src/deploy-s6-overlay.sh && \
     # Clean up
-    rustup self uninstall -y && \
     apt-get remove -y ${TEMP_PACKAGES[@]} && \
     apt-get autoremove -y && \
     apt-get clean -y && \
@@ -242,7 +197,6 @@ RUN set -x && \
     # Document versions
     opendkim -V | grep OpenDKIM | sed "s/OpenDKIM Filter //g" >> /VERSIONS && \
     postgrey --version >> /VERSIONS && \
-    echo "ClamAV $(clamconf --version | tr -s ' ' | cut -d ' ' -f 5)" >> /VERSIONS && \
     echo "postfix-policyd-spf-perl $BRANCH_POSTFIX_POLICYD_SPF_PERL" >> /VERSIONS && \
     echo "postfix $(postconf mail_version | cut -d '=' -f 2 | tr -d ' ')" >> /VERSIONS && \
     echo $DOCKER_POSTFIX_VERSION > /CONTAINER_VERSION && \

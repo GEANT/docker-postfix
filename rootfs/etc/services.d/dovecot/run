@@ -2,7 +2,7 @@
 # shellcheck shell=bash
 set -eo pipefail
 
-# Do we run clamd?
+# Do we run dovecot?
 if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
     s6-notifyoncheck \
         -s 1000 \

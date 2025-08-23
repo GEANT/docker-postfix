@@ -3,12 +3,6 @@
 
 set -eo pipefail
 
-# Wait for clamd & clamav-milter
-if [ "${ENABLE_CLAMAV}" = "true" ]; then
-    echo "[postfix] Waiting for clamav..."
-    s6-svwait -U /run/s6/services/clamd /run/s6/services/clamav-milter
-fi
-
 # Wait for opendkim
 if [ "${ENABLE_OPENDKIM}" = "true" ]; then
     echo "[postfix] Waiting for opendkim..."

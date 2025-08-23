@@ -269,12 +269,12 @@ CHECK_RECIPIENT_ACCESS=""
         fi
     fi
 
-    # Do we enable & configure ClamAV?
-    if [ "${ENABLE_CLAMAV}" = "true" ]; then
+    # Do we configure ClamAV?
+    if [ -n "${CLAMAV_MILTER_HOSTNAME}" ]; then
         if [ "$SMTPDMILTERS" = "" ]; then
-            SMTPDMILTERS="inet:localhost:7357"
+            SMTPDMILTERS="inet:${CLAMAV_MILTER_HOSTNAME}:7357"
         else
-            SMTPDMILTERS="$SMTPDMILTERS, inet:localhost:7357"
+            SMTPDMILTERS="$SMTPDMILTERS, inet:${CLAMAV_MILTER_HOSTNAME}:7357"
         fi
     fi
 

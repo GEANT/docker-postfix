@@ -20,7 +20,6 @@ Postfix is Wietse Venema's excellent mail server.
         1. [Backwards-Compatibility Safety Net Options](#backwards-compatibility-safety-net-options)
     4. [LDAP Recipient Verification](#ldap-recipient-verification)
     5. [OpenDKIM Configuration](#opendkim-configuration)
-    6. [ClamAV Configuration](#clamav-configuration)
 7. [Configuration Files](#configuration-files)
     1. [Postfix table files](#postfix-table-files)
     2. [Postgrey whitelist files](#postgrey-whitelist-files)
@@ -59,7 +58,7 @@ The container employs Postfix's [Postscreen](http://www.postfix.org/POSTSCREEN_R
 Apart from basic email relaying, the container can optionally:
 
 * Implement up-to-date [TLS/SSL security for SMTP connections](http://www.postfix.org/TLS_README.html)
-* Perform email virus scanning with [ClamAV](https://www.clamav.net) for all inbound/outbound email
+* Send all inbound/outbound email to [ClamAV](https://www.clamav.net) for virus scanning, if `CLAMAV_MILTER_HOSTNAME` is set.
 * Implement [DNSBL](https://en.wikipedia.org/wiki/Domain_Name_System-based_Blackhole_List)s for inbound email
 * Perform [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) signing for all outbound email
 * Perform [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) verification for all inbound email
@@ -84,9 +83,6 @@ This container implement's the excellent [s6-overlay](https://github.com/just-co
 | Service Name | Description | When is it started |
 |-----|-----|-----|
 | `postfix` | Runs postfix | Always |
-| `clamav-milter` | Part of ClamAV. Runs the `clamav-milter` for scanning emails for virii. | If `ENABLE_CLAMAV` is set to `true` |
-| `clamd` | Part of ClamAV. Runs `clamd`, the virus scanning engine for `clamav-milter`. |  If `ENABLE_CLAMAV` is set to `true` |
-| `freshclam` | Part of ClamAV. Runs `freshclam` against the mirror definedy by `FRESHCLAM_DB_MIRROR` (defaults to `database.clamav.net`) on the schedule defined by `FRESHCLAM_CHECKS_PER_DAY`, to keep the ClamAV database updated. | If `ENABLE_CLAMAV` is set to `true` |
 | `opendkim` | Runs `opendkim` for DKIM signing/verification. | If `ENABLE_OPENDKIM` is set to `true` |
 | `postgrey` | Runs `postgrey` for greylisting. | If `ENABLE_POSTGREY` is set to `true` |
 | `postgrey_whitelist_update` | Runs daily. Fetches the latest system whitelist from <https://postgrey.schweikert.ch/pub/postgrey_whitelist_clients>, merges with any locally defined whitelist, and reloads `postgrey`. | If `ENABLE_POSTGREY` is set to `true` |
@@ -116,14 +112,14 @@ In this deployment recipe, two containers (`mail_in` and `mail_out`) are created
 * Performs SPF & DKIM verification
 * Performs various header/sender/recipient checks to make sure the message is valid
 * Performs recipient verification via LDAP to internal Active Directory
-* Scans the email for viruses with ClamAV
+* Send email to ClamAV for viruses scan if `CLAMAV_MILTER_HOSTNAME` is set
 * Forwards the email to the legacy Exchange server
 
 `mail_out` is designed to sit between the local legacy Exchange server and the internet. It handles outbound email, and provides the following:
 
 * Provides up-to-date TLS for talking to external MTAs
 * Performs DKIM signing
-* Scans the email for viruses with ClamAV
+* Send email to ClamAV if `CLAMAV_MILTER_HOSTNAME` is set.
 * Delivers the outgoing email
 
 From a networking perspective:
@@ -137,7 +133,6 @@ From a networking perspective:
 
 | Environment Variable | Description                                                                               |
 |----------------------|-------------------------------------------------------------------------------------------|
-| `ENABLE_CLAMAV`      | Optional. Set to "true" to enable [ClamAV](https://www.clamav.net). Default is "false". |
 | `ENABLE_LDAP_RECIPIENT_ACCESS` | Optional. Enable LDAP-based recipient verification. See **LDAP Recipient Verification** section below. |
 | `ENABLE_OPENDKIM`    | Optional. Set to "true" to enable OpenDKIM. If OpenDKIM is enabled, the "OpenDKIM Configuration" variables below will need to be set. Default is "false". |
 | `ENABLE_POSTGREY`    | Optional. Set to "true" to enable [postgrey](https://postgrey.schweikert.ch). Default is "false". |
@@ -239,16 +234,7 @@ If `ENABLE_LDAP_RECIPIENT_ACCESS` is enabled, the final `smtpd_recipient_restric
 
 | Environment Variable               | Detail                                                                  |
 |------------------------------------|-------------------------------------------------------------------------|
-| `FRESHCLAM_CHECKS_PER_DAY`         | Optional. Number of database checks per day. Default: `12` (every two hours). |
-| `FRESHCLAM_DB_MIRROR`              | Optional. The hostname to fetch ClamAV updates from. Default: `database.clamav.net`. |
 | `CLAMAV_MILTER_HOSTNAME`           | Optional. The hostname of ClamAV Milter. Default: `localhost`. |
-| `CLAMAV_MILTER_REPORT_HOSTNAME`    | Optional. The hostname ClamAV Milter will report in the `X-Virus-Scanned` header. If unset, defaults to the container's hostname. |
-| `CLAMAV_MILTER_ALLOWLIST` | Optional. Sets ClamAV Milter's [`Whitelist`](https://linux.die.net/man/5/clamav-milter.conf) option. |
-| `CLAMAV_CLAMD_PHISHING_SIGNATURES`       | Optional. Overrides ClamAV Daemon's default setting for [`PhishingSignatures`](https://linux.die.net/man/5/clamd.conf). |
-| `CLAMAV_CLAMD_PHISHING_SCAN_URLS`        | Optional. Overrides ClamAV Daemon's default setting for [`PhishingScanURLs`](https://linux.die.net/man/5/clamd.conf). |
-| `CLAMAV_CLAMD_PHISHING_ALWAYS_BLOCK_SSL_MISMATCH` | Optional. Overrides ClamAV Daemon's default setting for [`PhishingAlwaysBlockSSLMismatch`](https://linux.die.net/man/5/clamd.conf). |
-| `CLAMAV_CLAMD_PHISHING_ALWAYS_BLOCK_CLOAK` | Optional. Overrides ClamAV Daemon's default setting for [`PhishingAlwaysBlockCloak`](https://linux.die.net/man/5/clamd.conf). |
-| `CLAMAV_CLAMD_HEURISTIC_SCAN_PRECEDENCE` | Optional. Overrides ClamAV Daemon's default setting for [`HeuristicScanPrecedence`](https://linux.die.net/man/5/clamd.conf). |
 
 ## Configuration Files
 
@@ -290,7 +276,7 @@ The format of this file is as-per the [`/etc/aliases`](https://linux.die.net/man
 |-----|-----|-----|
 | `/etc/postfix/local_aliases/aliases` | It is merged with the system aliases file. | Run helper command `update_aliases` (see below). |
 
-The system aliases file maps `postmaster`, `root`, `postfix` and `clamav` through to the address specified by `POSTMASTER_EMAIL`.
+The system aliases file maps `postmaster`, `root` and `postfix` through to the address specified by `POSTMASTER_EMAIL`.
 
 ### Virtual Aliases
 
@@ -312,7 +298,6 @@ The format of this file is as-per the [`/etc/postfix/virtual`](https://www.postf
 
 | Path | Access | Detail |
 |------|--------|--------|
-| `/var/lib/clamav` | `rw` | ClamAV anti-virus database. Map if using ClamAV. |
 | `/etc/postfix/local_aliases` | `rw` | A file named `aliases` can be placed in this folder. The contents of this file will be added to the container's `/etc/aliases` at startup. Map if you need to add entries to `/etc/aliases`. |
 | `/etc/postfix/certs` | `ro` | Postfix TLS chain files should be placed in here. Map if using TLS/SSL. |
 | `/etc/postgrey` | `ro` | Postgrey local whitelists should be placed in here. Map if using postgrey. |
@@ -480,7 +465,6 @@ If you edit one of postfix's table files, you must run the appropriate helper co
 After a message is queued, it is passed through milters:
 
 1. If `ENABLE_DKIM`, the email is sent through `opendkim`. The email is signed/verified by DKIM.
-2. If `ENABLE_CLAMAV`, the email is sent through `clamav-milter`. The email is dropped if a virus is detected. If `CLAMAV_MILTER_HOSTNAME` is not `localhost` ClamAV willl not be compiled.
 3. If any additional milters are defined with `POSTFIX_SMTPD_MILTERS`, they are then applied.
 
 ## Testing
