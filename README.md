@@ -131,8 +131,11 @@ From a networking perspective:
 
 ### Container configuration
 
+If`/local/pre-start.sh` exists, it will be executed first. Exectuable bit will be added automatically. Alternatively, see variable `PRESTART` below.
+
 | Environment Variable | Description                                                                               |
 |----------------------|-------------------------------------------------------------------------------------------|
+| `PRESTART` | Optional. Runs the value assigned to this variable before any other script. It's also possible to upload a template called `/local/pre-start.sh` |
 | `ENABLE_LDAP_RECIPIENT_ACCESS` | Optional. Enable LDAP-based recipient verification. See **LDAP Recipient Verification** section below. |
 | `ENABLE_OPENDKIM`    | Optional. Set to "true" to enable OpenDKIM. If OpenDKIM is enabled, the "OpenDKIM Configuration" variables below will need to be set. Default is "false". |
 | `ENABLE_POSTGREY`    | Optional. Set to "true" to enable [postgrey](https://postgrey.schweikert.ch). Default is "false". |
