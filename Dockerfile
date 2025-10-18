@@ -26,12 +26,13 @@ RUN set -x && \
     TEMP_PACKAGES=() && \
     KEPT_PACKAGES=() && \
     # Packages to keep
-    KEPT_PACKAGES+=(inetutils-syslogd) && \
+    KEPT_PACKAGES+=(bind9-dnsutils) && \
     KEPT_PACKAGES+=(bzip2) && \
     KEPT_PACKAGES+=(ca-certificates) && \
     KEPT_PACKAGES+=(curl) && \
     KEPT_PACKAGES+=(dovecot-core) && \
     KEPT_PACKAGES+=(gnupg2) && \
+    KEPT_PACKAGES+=(inetutils-syslogd) && \
     KEPT_PACKAGES+=(libberkeleydb-perl) && \
     KEPT_PACKAGES+=(libicu-dev) && \
     KEPT_PACKAGES+=(libjson-c5) && \
