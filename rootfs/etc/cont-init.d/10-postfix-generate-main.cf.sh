@@ -50,12 +50,6 @@ CHECK_RECIPIENT_ACCESS=""
         echo "inet_protocols = ${POSTFIX_INET_PROTOCOLS}"
     fi
 
-    # hhttps://www.postfix.org/postconf.5.html#postscreen_upstream_proxy_protocol
-    if [ -n "${ENABLE_HAPROXY_PROTOCOL}" ]; then
-        echo "postscreen_upstream_proxy_protocol = haproxy"
-        echo "postscreen_upstream_proxy_timeout = 5s"
-    fi
-
     # http://www.postfix.org/postconf.5.html#mydomain
     if [ -n "${POSTFIX_MYDOMAIN}" ]; then
         echo "mydomain = ${POSTFIX_MYDOMAIN}"
@@ -231,10 +225,12 @@ CHECK_RECIPIENT_ACCESS=""
     # ========== END smtpd_recipient_restrictions ==========
 
     # ========== START smtpd_sender_restrictions ==========
-    if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
+    if [ "${ENABLE_SMTPS_PORT}" = "true" ] || [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
         echo "smtpd_sasl_auth_enable = yes"
         echo "smtpd_sasl_type = dovecot"
         echo "smtpd_sasl_path = private/auth"
+    fi
+    if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
         echo "smtpd_sasl_security_options = noanonymous"
         echo "broken_sasl_auth_clients = yes"
         echo "smtpd_sender_restrictions ="

@@ -3,7 +3,7 @@
 set -eo pipefail
 
 # Do we run dovecot?
-if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
+if [ "${POSTFIX_SASL_AUTH}" = "true" ] || [ "${ENABLE_SMTPS_PORT}" = "true" ]; then
     s6-notifyoncheck \
         -s 1000 \
         -t 1000 \
