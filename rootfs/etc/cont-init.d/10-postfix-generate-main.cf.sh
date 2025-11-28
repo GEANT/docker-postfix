@@ -217,7 +217,6 @@ CHECK_RECIPIENT_ACCESS=""
     if [ "${CHECK_RECIPIENT_ACCESS}" != "" ]; then
         echo "    check_recipient_access ${CHECK_RECIPIENT_ACCESS},"
         echo "    $POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION"
-
     else
         echo "    permit"
     fi
