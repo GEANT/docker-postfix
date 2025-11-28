@@ -50,6 +50,12 @@ CHECK_RECIPIENT_ACCESS=""
         echo "inet_protocols = ${POSTFIX_INET_PROTOCOLS}"
     fi
 
+    # hhttps://www.postfix.org/postconf.5.html#postscreen_upstream_proxy_protocol
+    if [ -n "${ENABLE_HAPROXY_PROTOCOL}" ]; then
+        echo "postscreen_upstream_proxy_protocol = haproxy"
+        echo "postscreen_upstream_proxy_timeout = 5s"
+    fi
+
     # http://www.postfix.org/postconf.5.html#mydomain
     if [ -n "${POSTFIX_MYDOMAIN}" ]; then
         echo "mydomain = ${POSTFIX_MYDOMAIN}"
