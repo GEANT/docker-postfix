@@ -4,7 +4,7 @@
 DOVECOT_CONF="/etc/dovecot/dovecot.conf"
 DOVECOT_DEBUG_CONF="/etc/dovecot/debug.conf"
 
-if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
+if [ "${POSTFIX_SASL_AUTH}" = "true" ] || [ "${ENABLE_SMTPS_PORT}" = "true" ]; then
     truncate -s 0 $DOVECOT_CONF
     {
         echo "!include_try /usr/share/dovecot/protocols.d/*.protocol"
