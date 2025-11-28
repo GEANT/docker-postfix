@@ -302,34 +302,36 @@ CHECK_RECIPIENT_ACCESS=""
         echo "message_size_limit = ${POSTFIX_MESSAGE_SIZE_LIMIT}"
     fi
 
-    # http://www.postfix.org/postconf.5.html#postscreen_access_list
-    echo "postscreen_access_list = "
-    echo "    permit_mynetworks,"
-    echo "    cidr:/etc/postfix/postscreen_access.cidr"
+    if [ -n "${ENABLE_HAPROXY_PROTOCOL}" ]; then
+        # http://www.postfix.org/postconf.5.html#postscreen_access_list
+        echo "postscreen_access_list = "
+        echo "    permit_mynetworks,"
+        echo "    cidr:/etc/postfix/postscreen_access.cidr"
 
-    # http://www.postfix.org/postconf.5.html#postscreen_blacklist_action
-    # TODO - once postscreen confirmed working properly, change to drop
-    echo "postscreen_blacklist_action = ignore"
+        # http://www.postfix.org/postconf.5.html#postscreen_blacklist_action
+        # TODO - once postscreen confirmed working properly, change to drop
+        echo "postscreen_blacklist_action = ignore"
 
-    # http://www.postfix.org/postconf.5.html#postscreen_dnsbl_sites
-    if [ -n "${POSTFIX_DNSBL_SITES}" ]; then
-        echo "postscreen_dnsbl_sites = ${POSTFIX_DNSBL_SITES}"
-        echo "postscreen_dnsbl_action = drop"
+        # http://www.postfix.org/postconf.5.html#postscreen_dnsbl_sites
+        if [ -n "${POSTFIX_DNSBL_SITES}" ]; then
+            echo "postscreen_dnsbl_sites = ${POSTFIX_DNSBL_SITES}"
+            echo "postscreen_dnsbl_action = drop"
+        fi
+
+        # http://www.postfix.org/postconf.5.html#postscreen_dnsbl_threshold
+        if [ -n "${POSTFIX_DNSBL_THRESHOLD}" ]; then
+            echo "postscreen_dnsbl_threshold = ${POSTFIX_DNSBL_THRESHOLD}"
+        fi
+
+        # http://www.postfix.org/postconf.5.html#postscreen_dnsbl_reply_map
+        if [ -f "/etc/postfix/tables/dnsbl_reply.texthash" ]; then
+            echo "postscreen_dnsbl_reply_map = texthash:/etc/postfix/dnsbl_reply.texthash"
+        fi
+
+        # http://www.postfix.org/postconf.5.html#postscreen_greet_action
+        # TODO - once postscreen confirmed working properly, change to drop
+        echo "postscreen_greet_action = drop"
     fi
-
-    # http://www.postfix.org/postconf.5.html#postscreen_dnsbl_threshold
-    if [ -n "${POSTFIX_DNSBL_THRESHOLD}" ]; then
-        echo "postscreen_dnsbl_threshold = ${POSTFIX_DNSBL_THRESHOLD}"
-    fi
-
-    # http://www.postfix.org/postconf.5.html#postscreen_dnsbl_reply_map
-    if [ -f "/etc/postfix/tables/dnsbl_reply.texthash" ]; then
-        echo "postscreen_dnsbl_reply_map = texthash:/etc/postfix/dnsbl_reply.texthash"
-    fi
-
-    # http://www.postfix.org/postconf.5.html#postscreen_greet_action
-    # TODO - once postscreen confirmed working properly, change to drop
-    echo "postscreen_greet_action = drop"
 
     # ========== END postscreen config ==========
 } >"${POSTFIX_MAINCF_FILE}"
