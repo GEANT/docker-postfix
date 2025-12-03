@@ -40,7 +40,7 @@ fi
 # https://www.postfix.org/postconf.5.html#postscreen_upstream_proxy_protocol
 if [ -n "${ENABLE_HAPROXY_PROTOCOL}" ]; then
     cat <<'EOF' >${POSTFIX_MASTERCF_FILE}
-# Enable haproxy protocol support in postscreen
+# Enable haproxy protocol
 smtp      inet  n       -       n       -       1       smtpd
     -o smtpd_upstream_proxy_protocol=haproxy
 smtpd     pass  -       -       n       -       -       smtpd
