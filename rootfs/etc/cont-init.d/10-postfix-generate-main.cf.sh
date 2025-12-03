@@ -305,7 +305,7 @@ CHECK_RECIPIENT_ACCESS=""
         echo "message_size_limit = ${POSTFIX_MESSAGE_SIZE_LIMIT}"
     fi
 
-    if [ -n "${ENABLE_HAPROXY_PROTOCOL}" ]; then
+    if [ -z "${ENABLE_HAPROXY_PROTOCOL}" ]; then
         # http://www.postfix.org/postconf.5.html#postscreen_access_list
         echo "postscreen_access_list = "
         echo "    permit_mynetworks,"
