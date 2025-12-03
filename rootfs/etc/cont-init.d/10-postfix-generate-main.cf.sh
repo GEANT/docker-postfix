@@ -48,6 +48,7 @@ CHECK_RECIPIENT_ACCESS=""
     # http://www.postfix.org/postconf.5.html#inet_protocols
     if [ -n "${POSTFIX_INET_PROTOCOLS}" ]; then
         echo "inet_protocols = ${POSTFIX_INET_PROTOCOLS}"
+        echo "smtp_address_preference = ipv4"
     fi
 
     # http://www.postfix.org/postconf.5.html#mydomain
