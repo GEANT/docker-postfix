@@ -137,7 +137,11 @@ CHECK_RECIPIENT_ACCESS=""
     echo "smtpd_helo_required = yes"
     echo "smtpd_helo_restrictions = "
     echo "    permit_mynetworks,"
-    echo "    check_helo_access hash:/etc/postfix/helo_access.hash,"
+    if [ "${POSTFIX_REJECT_INVALID_HELO_HOSTNAME}" = "true" ] || [ "${POSTFIX_REJECT_NON_FQDN_HELO_HOSTNAME}" = "true" ] || [ "${POSTFIX_REJECT_UNKNOWN_HELO_HOSTNAME}" = "true" ]; then
+        echo "    check_helo_access hash:/etc/postfix/helo_access.hash,"
+    else
+        echo "    check_helo_access hash:/etc/postfix/helo_access.hash"
+    fi
 
     if [ "${POSTFIX_REJECT_INVALID_HELO_HOSTNAME}" = "true" ]; then
         echo "    reject_invalid_helo_hostname,"
