@@ -122,7 +122,7 @@ CHECK_RECIPIENT_ACCESS=""
 
     echo "disable_vrfy_command = yes"
 
-    echo "smtpd_hard_error_limit = 1"
+    echo "smtpd_hard_error_limit = 10"
 
     echo "header_checks = pcre:/etc/postfix/header_checks.pcre"
     echo "milter_header_checks = pcre:/etc/postfix/milter_header_checks.pcre"
