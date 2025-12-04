@@ -131,7 +131,7 @@ From a networking perspective:
 
 ### Container configuration
 
-If`/local/pre-start.sh` exists, it will be executed first. Exectuable bit will be added automatically. Alternatively, see variable `PRESTART` below.
+If `/local/pre-start.sh` exists, it will be executed first. Exectuable bit will be added automatically. Alternatively, see variable `PRESTART` below.
 
 | Environment Variable | Description                                                                               |
 |----------------------|-------------------------------------------------------------------------------------------|
@@ -154,6 +154,7 @@ If`/local/pre-start.sh` exists, it will be executed first. Exectuable bit will b
 
 | Environment Variable               | Documentation Link                                                      |
 |------------------------------------|-------------------------------------------------------------------------|
+| `POSTFIX_ALWAYS_ADD_MISSING_HEADER`              | See [documentation link](https://www.postfix.org/postconf.5.html#always_add_missing_headers). |
 | `POSTFIX_DNSBL_SITES`              | See [documentation link](http://www.postfix.org/postconf.5.html#postscreen_dnsbl_sites). |
 | `POSTFIX_DNSBL_THRESHOLD`          | See [documentation link](http://www.postfix.org/postconf.5.html#postscreen_dnsbl_threshold). |
 | `POSTFIX_INET_PROTOCOLS`           | See [documentation link](http://www.postfix.org/postconf.5.html#inet_protocols). |

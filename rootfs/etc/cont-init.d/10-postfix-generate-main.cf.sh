@@ -17,6 +17,11 @@ CHECK_RECIPIENT_ACCESS=""
     # http://www.postfix.org/postconf.5.html#compatibility_level
     echo "compatibility_level = 2"
 
+    # https://www.postfix.org/postconf.5.html#always_add_missing_headers
+    if [ "${POSTFIX_ALWAYS_ADD_MISSING_HEADER}" = "true" ]; then
+        echo "always_add_missing_headers = yes"
+    fi
+
     # http://www.postfix.org/postconf.5.html#alias_maps
     echo "alias_maps = hash:/etc/aliases"
 
