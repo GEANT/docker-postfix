@@ -18,7 +18,7 @@ CHECK_RECIPIENT_ACCESS=""
     echo "compatibility_level = 2"
 
     # https://www.postfix.org/postconf.5.html#always_add_missing_headers
-    if [ "${POSTFIX_ALWAYS_ADD_MISSING_HEADER}" = "true" ]; then
+    if [ "${POSTFIX_ALWAYS_ADD_MISSING_HEADERS}" = "true" ]; then
         echo "always_add_missing_headers = yes"
     fi
 
