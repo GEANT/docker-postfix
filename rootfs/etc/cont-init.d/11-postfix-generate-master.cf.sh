@@ -40,6 +40,7 @@ fi
 # https://www.postfix.org/postconf.5.html#postscreen_upstream_proxy_protocol
 if [ -n "${ENABLE_HAPROXY_PROTOCOL}" ]; then
     cat <<'EOF' >${POSTFIX_MASTERCF_FILE}
+# service  type  private  unpriv  chroot  wakeup  maxproc  command
 # Enable haproxy protocol
 smtp      inet  n       -       n       -       1       smtpd
     -o smtpd_upstream_proxy_protocol=haproxy
@@ -49,7 +50,7 @@ submission inet n       -       n       -       -       smtpd
     -o smtpd_tls_security_level=encrypt
     -o smtpd_sasl_auth_enable=yes
     -o smtpd_upstream_proxy_protocol=haproxy
-submissions     inet  n       -       y       -       -       smtpd
+submissions inet n      -      y       -       -       smtpd
     -o syslog_name=postfix/smtps
     -o smtpd_tls_wrappermode=yes
     -o smtpd_sasl_auth_enable=yes

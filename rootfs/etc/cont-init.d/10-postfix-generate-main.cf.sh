@@ -237,7 +237,7 @@ CHECK_RECIPIENT_ACCESS=""
     if [ "${ENABLE_SMTPS_PORT}" = "true" ] || [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
         echo "smtpd_sasl_auth_enable = yes"
         echo "smtpd_sasl_type = dovecot"
-        echo "smtpd_sasl_path = private/auth"
+        echo "smtpd_sasl_path = /run/dovecot-auth/auth"
     fi
     if [ "${POSTFIX_SASL_AUTH}" = "true" ]; then
         echo "smtpd_sasl_security_options = noanonymous"
