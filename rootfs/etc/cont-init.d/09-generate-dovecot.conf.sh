@@ -26,7 +26,7 @@ if [ "${POSTFIX_SASL_AUTH}" = "true" ] || [ "${ENABLE_SMTPS_PORT}" = "true" ]; t
         echo "service auth-worker {"
         echo "}"
         echo "service auth {"
-        echo "  unix_listener /run/dovecot-auth/auth {"
+        echo "  unix_listener /var/run/dovecot/auth {"
         echo "    mode = 0660"
         echo "    user = postfix"
         echo "    group = postdrop"

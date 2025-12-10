@@ -9,8 +9,7 @@ install -o nobody -g nogroup -m 0755 -d \
     /var/log/postgrey \
     /var/log/postgrey_whitelist_update \
     /var/log/syslogd \
-    /var/log/dovecot \
-    /run/dovecot-auth
+    /var/log/dovecot
 
 # Postfix
 mkdir -p /var/spool/postfix
