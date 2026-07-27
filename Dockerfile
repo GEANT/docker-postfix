@@ -1,6 +1,6 @@
 ARG DOCKER_POSTFIX_VERSION="1.0.0"
 
-FROM debian:bullseye-20251117-slim
+FROM debian:bullseye-slim
 
 ENV ENABLE_OPENDKIM="false" \
     POSTFIX_CHECK_RECIPIENT_ACCESS_FINAL_ACTION="defer" \
