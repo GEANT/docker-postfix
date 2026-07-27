@@ -134,8 +134,8 @@ RUN set -x && \
     # Get postfix source & signature & author key
     mkdir -p /src/postfix && \
     POSTFIX_STABLE_FAMILY="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk '/[0-9] stable release</{print $3}')" && \
-    POSTFIX_STABLE_DOWNLOAD_SOURCE_FILE="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk -F'"' -v pat="$POSTFIX_STABLE_FAMILY" '$0 ~ pat && /<a href="official\/postfix-(.*)\.tar\.gz"/ {print $2}')" && \
-    POSTFIX_STABLE_DOWNLOAD_SOURCE_GPG2="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk -F'"' -v pat="$POSTFIX_STABLE_FAMILY" '$0 ~ pat && /<a href="official\/postfix-(.*)\.tar\.gz\.gpg2"/ {print $2}')" && \
+    POSTFIX_STABLE_DOWNLOAD_SOURCE_FILE="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk -F'"' -v pat="$POSTFIX_STABLE_FAMILY" '$0 ~ pat && /<a href="official\/postfix-(.*)\.tar\.gz"/ {print $2}' | head -n 1)" && \
+    POSTFIX_STABLE_DOWNLOAD_SOURCE_GPG2="$(curl -s http://ftp.porcupine.org/mirrors/postfix-release/index.html | awk -F'"' -v pat="$POSTFIX_STABLE_FAMILY" '$0 ~ pat && /<a href="official\/postfix-(.*)\.tar\.gz\.gpg2"/ {print $2}' | head -n 1)" && \
     curl --location --output /src/postfix.tar.gz "http://ftp.porcupine.org/mirrors/postfix-release/${POSTFIX_STABLE_DOWNLOAD_SOURCE_FILE}" && \
     curl --location --output /src/postfix.tar.gz.gpg2 "http://ftp.porcupine.org/mirrors/postfix-release/${POSTFIX_STABLE_DOWNLOAD_SOURCE_GPG2}" && \
     curl --location --output /src/wietse.pgp "${WIETSE_PGP_KEY_URL}" && \
