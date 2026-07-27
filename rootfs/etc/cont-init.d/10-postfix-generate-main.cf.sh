@@ -310,6 +310,11 @@ CHECK_RECIPIENT_ACCESS=""
     if [ -n "${POSTFIX_MESSAGE_SIZE_LIMIT}" ]; then
         echo "message_size_limit = ${POSTFIX_MESSAGE_SIZE_LIMIT}"
     fi
+    
+    # http://www.postfix.org/postconf.5.html#mailbox_size_limit
+    if [ -n "${POSTFIX_MAILBOX_SIZE_LIMIT}" ]; then
+        echo "mailbox_size_limit = ${POSTFIX_MAILBOX_SIZE_LIMIT}"
+    fi
 
     if [ -z "${ENABLE_HAPROXY_PROTOCOL}" ]; then
         # http://www.postfix.org/postconf.5.html#postscreen_access_list
